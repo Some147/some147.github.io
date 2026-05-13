@@ -118,6 +118,11 @@ const T={
     clearConfirm:(n)=>`Удалить все ${n} сделок? Отменить нельзя.`,
     exportedToast:(n)=>`Экспортировано ${n} сделок`,csvToast:(n)=>`CSV (${n} строк)`,
     delTradeConfirm:"Удалить сделку?",instrReq:"Укажите инструмент",resReq:"Укажите результат R",
+    editTrade:"Редактировать",planTitle:"Торговый план",newPlan:"Новый план",
+    planBadge:"ПЛАН",planDesc:"Торговые планы не учитываются в статистике до открытия сделки.",
+    confirmTrade:"✅ Подтвердить — открыть сделку",planSection:"Торговые планы",
+    altScenario:"Альтернативный сценарий",altProb2:"Вероятность",
+    plans:"Планы",editMode:"Редактирование",saveEdit:"Сохранить изменения",
     sAsia:"Азия",sLondon:"Лондон",sNY:"Нью-Йорк",sLonNY:"Лондон/НЙ",sLonAsia:"Лондон/Азия",
     pip:"Пип",typeL:"Тип",pipPerLot:"Пип/$лот",pipsLabel:"пипс",wW:"П",wL:"У",
     scaleCompact:"Компактный",scaleNormal:"Обычный",scaleLarge:"Крупный",
@@ -200,6 +205,11 @@ const T={
     clearConfirm:(n)=>`Delete all ${n} trades? Cannot be undone.`,
     exportedToast:(n)=>`Exported ${n} trades`,csvToast:(n)=>`CSV (${n} rows)`,
     delTradeConfirm:"Delete this trade?",instrReq:"Enter instrument",resReq:"Enter result R",
+    editTrade:"Edit",planTitle:"Trading Plan",newPlan:"New Plan",
+    planBadge:"PLAN",planDesc:"Trading plans are not counted in statistics until the trade is opened.",
+    confirmTrade:"✅ Confirm — Open Trade",planSection:"Trading Plans",
+    altScenario:"Alternative Scenario",altProb2:"Probability",
+    plans:"Plans",editMode:"Edit",saveEdit:"Save Changes",
     sAsia:"Asia",sLondon:"London",sNY:"New York",sLonNY:"London/NY",sLonAsia:"London/Asia",
     pip:"Pip",typeL:"Type",pipPerLot:"Pip/$lot",pipsLabel:"pips",wW:"W",wL:"L",
     scaleCompact:"Compact",scaleNormal:"Normal",scaleLarge:"Large",
@@ -337,7 +347,9 @@ function computeStats(trades){
     pf:tL>0?tW/tL:tW>0?Infinity:0,
     best:cl.length?Math.max(...cl.map(t=>t.resultR)):0,
     worst:cl.length?Math.min(...cl.map(t=>t.resultR)):0,
-    open:trades.filter(t=>t.status==="open").length,cls};
+    open:trades.filter(t=>t.status==="open").length,
+    plans:trades.filter(t=>t.status==="plan").length,
+    cls};
 }
 function TradesProvider({children}){
   const [trades,setTrades]=useState([]);
@@ -437,22 +449,25 @@ const CLS_COLOR={"A+":"#00C896",A:"#34D399",B:"#60A5FA",C:"#FBBF24",D:"#F87171"}
 
 // ── TradeCard ─────────────────────────────────────────────────────────────────
 function TradeCard({trade,onClick}){
+  const isPlan=trade.status==="plan";
   const isOpen=trade.status==="open";
   const rC=trade.resultR==null?C.text2:trade.resultR>0?C.profit:C.loss;
   const [hov,setHov]=useState(false);
-  return(<button onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",background:C.bg2,border:`1px solid ${hov?C.tint+"60":C.border}`,borderRadius:14,width:"100%",textAlign:"left",marginBottom:8}}>
-    <div style={{width:8,height:8,borderRadius:4,flexShrink:0,background:isOpen?C.warning:trade.resultR>0?C.profit:C.loss,boxShadow:isOpen?`0 0 6px ${C.warning}`:"none"}}/>
+  const dotColor=isPlan?"#818CF8":isOpen?C.warning:trade.resultR>0?C.profit:C.loss;
+  return(<button onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",background:isPlan?C.bg3:C.bg2,border:`1px solid ${hov?C.tint+"60":isPlan?"#818CF840":C.border}`,borderRadius:14,width:"100%",textAlign:"left",marginBottom:8}}>
+    <div style={{width:8,height:8,borderRadius:4,flexShrink:0,background:dotColor,boxShadow:isOpen?`0 0 6px ${C.warning}`:isPlan?"0 0 6px #818CF8":""}}/>
     <div style={{flex:1,minWidth:0}}>
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:2}}>
         <span style={{fontWeight:700,fontFamily:"'JetBrains Mono',monospace",fontSize:14,color:C.text}}>{trade.instrument}</span>
+        {isPlan&&<span style={{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:5,background:"#818CF825",color:"#818CF8"}}>PLAN</span>}
         {trade.tradeClass&&<span style={{fontSize:10,fontWeight:700,padding:"1px 6px",borderRadius:5,background:(CLS_COLOR[trade.tradeClass]||C.text3)+"25",color:CLS_COLOR[trade.tradeClass]||C.text3}}>{trade.tradeClass}</span>}
         {trade.entryType&&<span style={{fontSize:10,color:C.text3}}>W{trade.entryType}</span>}
       </div>
       <div style={{fontSize:11,color:C.text3,fontFamily:"'JetBrains Mono',monospace"}}>{new Date(trade.date).toLocaleDateString("ru-RU")}{trade.developingWave?` · ${trade.developingWave}`:""}</div>
     </div>
     <div style={{textAlign:"right",flexShrink:0}}>
-      {isOpen?<span style={{fontSize:11,color:C.warning,fontWeight:600}}>OPEN</span>:<span style={{fontSize:16,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:rC}}>{trade.resultR!=null?`${trade.resultR>=0?"+":""}${trade.resultR.toFixed(2)}R`:"—"}</span>}
-      {trade.resultUSD!=null&&!isOpen&&<div style={{fontSize:10,color:C.text3,fontFamily:"'JetBrains Mono',monospace"}}>${trade.resultUSD>=0?"+":""}{trade.resultUSD.toFixed(2)}</div>}
+      {isPlan?<span style={{fontSize:11,color:"#818CF8",fontWeight:600}}>PLAN</span>:isOpen?<span style={{fontSize:11,color:C.warning,fontWeight:600}}>OPEN</span>:<span style={{fontSize:16,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:rC}}>{trade.resultR!=null?`${trade.resultR>=0?"+":""}${trade.resultR.toFixed(2)}R`:"—"}</span>}
+      {trade.resultUSD!=null&&!isOpen&&!isPlan&&<div style={{fontSize:10,color:C.text3,fontFamily:"'JetBrains Mono',monospace"}}>${trade.resultUSD>=0?"+":""}{trade.resultUSD.toFixed(2)}</div>}
     </div>
     <span style={{color:C.text3,fontSize:18,marginLeft:4}}>›</span>
   </button>);
@@ -484,7 +499,8 @@ function Dashboard({onNav,onOpenTrade,isDesktop}){
     </div>
     {stats.total>0&&<div style={{padding:"0 16px 10px"}}><Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:10}}>{t.tradeClasses}</div><div style={{display:"flex",justifyContent:"space-around"}}>{["A+","A","B","C","D"].map(c=><div key={c} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:10,height:10,borderRadius:5,background:CLS_COLOR[c]}}/><span style={{fontSize:11,color:C.text2,fontWeight:600}}>{c}</span><span style={{fontSize:16,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:C.text}}>{stats.cls[c]}</span></div>)}</div></Card></div>}
     {stats.open>0&&<div style={{margin:"0 16px 10px",padding:"10px 14px",borderRadius:12,background:C.warning+"12",border:`1px solid ${C.warning}25`,display:"flex",alignItems:"center",gap:8}}><span style={{color:C.warning}}>⚡</span><span style={{fontSize:13,color:C.warning,fontWeight:600}}>{stats.open} {t.openPos}</span></div>}
-    {trades.slice(0,5).length>0&&<div style={{padding:"0 16px"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><span style={{fontSize:14,fontWeight:700,color:C.text}}>{t.recentTrades}</span><button onClick={()=>onNav("journal")} style={{fontSize:13,color:C.tint}}>{t.allTrades}</button></div>{trades.slice(0,5).map(tr=><TradeCard key={tr.id} trade={tr} onClick={()=>onOpenTrade(tr.id)}/>)}</div>}
+    {stats.plans>0&&<div onClick={()=>onNav("journal")} style={{margin:"0 16px 10px",padding:"10px 14px",borderRadius:12,background:"#818CF812",border:"1px solid #818CF830",display:"flex",alignItems:"center",gap:8,cursor:"pointer"}}><span style={{fontSize:14}}>📋</span><span style={{fontSize:13,color:"#818CF8",fontWeight:600}}>{stats.plans} {t.plans.toLowerCase()}</span><span style={{marginLeft:"auto",fontSize:11,color:"#818CF8"}}>›</span></div>}
+    {trades.filter(x=>x.status!=="plan").slice(0,5).length>0&&<div style={{padding:"0 16px"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><span style={{fontSize:14,fontWeight:700,color:C.text}}>{t.recentTrades}</span><button onClick={()=>onNav("journal")} style={{fontSize:13,color:C.tint}}>{t.allTrades}</button></div>{trades.filter(x=>x.status!=="plan").slice(0,5).map(tr=><TradeCard key={tr.id} trade={tr} onClick={()=>onOpenTrade(tr.id)}/>)}</div>}
     {trades.length===0&&<div style={{margin:"16px",padding:32,borderRadius:20,border:`1px dashed ${C.border}`,textAlign:"center"}}><div style={{fontSize:32,marginBottom:12}}>📈</div><div style={{fontSize:18,fontWeight:700,color:C.text,marginBottom:8}}>{t.emptyTitle}</div><div style={{fontSize:14,color:C.text2,lineHeight:1.6,marginBottom:20}}>{t.emptyDesc}</div><button onClick={()=>onNav("new")} style={{padding:"12px 28px",borderRadius:14,background:C.tint,color:"#fff",fontSize:14,fontWeight:600}}>{t.addTrade}</button></div>}
   </div>);
 }
@@ -493,11 +509,29 @@ function Dashboard({onNav,onOpenTrade,isDesktop}){
 function Journal({onNav,onOpenTrade,isDesktop}){
   const {trades}=useTrades();const {t}=useLang();
   const [filter,setFilter]=useState("all");const [search,setSearch]=useState("");
-  const FILTERS=[{label:t.all,value:"all"},{label:t.open,value:"open"},{label:t.closed,value:"closed"},{label:"A+",value:"A+"},{label:"A",value:"A"},{label:"B",value:"B"},{label:"C/D",value:"C"}];
-  const filtered=useMemo(()=>{let r=trades;if(filter==="open")r=r.filter(x=>x.status==="open");else if(filter==="closed")r=r.filter(x=>x.status==="closed");else if(["A+","A","B","C","D"].includes(filter))r=r.filter(x=>x.tradeClass===filter);if(search.trim()){const q=search.toLowerCase();r=r.filter(x=>x.instrument?.toLowerCase().includes(q)||x.developingWave?.toLowerCase().includes(q)||x.scenarioLogic?.toLowerCase().includes(q));}return r;},[trades,filter,search]);
+  const FILTERS=[{label:t.all,value:"all"},{label:t.plans,value:"plan"},{label:t.open,value:"open"},{label:t.closed,value:"closed"},{label:"A+",value:"A+"},{label:"A",value:"A"},{label:"B",value:"B"},{label:"C/D",value:"C"}];
+  const filtered=useMemo(()=>{
+    let r=trades;
+    if(filter==="plan")r=r.filter(x=>x.status==="plan");
+    else if(filter==="open")r=r.filter(x=>x.status==="open");
+    else if(filter==="closed")r=r.filter(x=>x.status==="closed");
+    else if(["A+","A","B","C","D"].includes(filter))r=r.filter(x=>x.tradeClass===filter);
+    else r=r.filter(x=>x.status!=="plan"||filter==="all"); // "all" shows everything
+    if(filter==="all")r=trades; // reset
+    if(search.trim()){const q=search.toLowerCase();r=r.filter(x=>x.instrument?.toLowerCase().includes(q)||x.developingWave?.toLowerCase().includes(q)||x.scenarioLogic?.toLowerCase().includes(q));}
+    return r;
+  },[trades,filter,search]);
+  const planCount=trades.filter(x=>x.status==="plan").length;
   const pt=isDesktop?"40px 16px 12px":"max(24px,env(safe-area-inset-top)) 16px 12px";
   return(<div style={{padding:"0 0 100px"}}>
-    <div style={{padding:pt,display:"flex",alignItems:"center",justifyContent:"space-between"}}><div style={{fontSize:26,fontWeight:700,color:C.text}}>{t.journal}</div><button onClick={()=>onNav("new")} style={{width:38,height:38,borderRadius:19,background:C.tint,color:"#fff",fontSize:22,display:"flex",alignItems:"center",justifyContent:"center"}}>+</button></div>
+    <div style={{padding:pt,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+      <div style={{fontSize:26,fontWeight:700,color:C.text}}>{t.journal}</div>
+      <div style={{display:"flex",gap:8}}>
+        <button onClick={()=>onNav("plan")} style={{padding:"8px 12px",borderRadius:12,background:"#818CF820",border:"1px solid #818CF840",color:"#818CF8",fontSize:12,fontWeight:600}}>📋 {t.newPlan}</button>
+        <button onClick={()=>onNav("new")} style={{width:38,height:38,borderRadius:19,background:C.tint,color:"#fff",fontSize:22,display:"flex",alignItems:"center",justifyContent:"center"}}>+</button>
+      </div>
+    </div>
+    {planCount>0&&filter!=="plan"&&<div onClick={()=>setFilter("plan")} style={{margin:"0 16px 10px",padding:"10px 14px",borderRadius:12,background:"#818CF812",border:"1px solid #818CF830",display:"flex",alignItems:"center",gap:8,cursor:"pointer"}}><span style={{fontSize:14}}>📋</span><span style={{fontSize:13,color:"#818CF8",fontWeight:600}}>{planCount} {t.plans.toLowerCase()}</span><span style={{marginLeft:"auto",fontSize:11,color:"#818CF8"}}>›</span></div>}
     <div style={{margin:"0 16px 10px",display:"flex",alignItems:"center",gap:8,background:C.bg3,borderRadius:12,padding:"8px 14px"}}><span style={{color:C.text3}}>🔍</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder={t.searchPh} style={{flex:1,background:"none",color:C.text,fontSize:14}}/>{search&&<button onClick={()=>setSearch("")} style={{color:C.text3,fontSize:16}}>×</button>}</div>
     <div style={{display:"flex",gap:6,padding:"0 16px 12px",flexWrap:"wrap"}}>{FILTERS.map(f=><Chip key={f.value} label={f.label} active={filter===f.value} onClick={()=>setFilter(f.value)}/>)}</div>
     <div style={{padding:"0 16px"}}>{filtered.length===0?<div style={{textAlign:"center",padding:"60px 0"}}><div style={{fontSize:32,marginBottom:12}}>📭</div><div style={{color:C.text,fontWeight:600,marginBottom:6}}>{trades.length===0?t.noTrades:t.noResults}</div><div style={{color:C.text3,fontSize:13}}>{trades.length===0?t.noTradesHint:t.noResultsHint}</div></div>:filtered.map(tr=><TradeCard key={tr.id} trade={tr} onClick={()=>onOpenTrade(tr.id)}/>)}</div>
@@ -607,38 +641,72 @@ function Stats({isDesktop}){
   </div>);
 }
 
-// ── New Trade ─────────────────────────────────────────────────────────────────
-function NewTrade({onBack,onSaved,prefill={},isDesktop}){
-  const {addTrade}=useTrades();const {t}=useLang();
+// ── New Trade / Edit Trade / New Plan ─────────────────────────────────────────
+function NewTrade({onBack,onSaved,prefill={},isDesktop,mode="new",editTrade=null}){
+  const {addTrade,updateTrade}=useTrades();const {t}=useLang();
+  const isPlan=mode==="plan";
+  const isEdit=mode==="edit"&&editTrade!=null;
+  const src=isEdit?editTrade:{};
   const SESS=[t.sAsia,t.sLondon,t.sNY,t.sLonNY,t.sLonAsia];
-  const [instr,setInstr]=useState(prefill.instrument||"");const [sess,setSess]=useState([]);
-  const [htf,setHtf]=useState("");const [ltf,setLtf]=useState("");
-  const [mktType,setMktType]=useState("trend");const [vol,setVol]=useState("medium");
-  const [curStr,setCurStr]=useState("");const [devWave,setDevWave]=useState("");
-  const [strStart,setStrStart]=useState("");const [fibT,setFibT]=useState("");
-  const [scenL,setScenL]=useState("");const [inv,setInv]=useState("");
-  const [altM,setAltM]=useState("");const [altP,setAltP]=useState("");const [altC,setAltC]=useState("");const [altB,setAltB]=useState("");
-  const [eType,setEType]=useState("");
-  const [ep,setEp]=useState(prefill.entryPoint!=null?String(prefill.entryPoint):"");
-  const [sl2,setSl2]=useState(prefill.stopLoss!=null?String(prefill.stopLoss):"");
-  const [tp2,setTp2]=useState(prefill.takeProfit!=null?String(prefill.takeProfit):"");
-  const [rp,setRp]=useState(prefill.riskPercent!=null?String(prefill.riskPercent):"");
-  const [ps,setPs]=useState(prefill.positionSize!=null?String(prefill.positionSize):"");
-  const [cc,setCc]=useState("");
-  const [pE,setPE]=useState(3);const [pF,setPF]=useState(3);const [pC,setPC]=useState(3);const [pP,setPP]=useState(2);
-  const [pLS,setPLS]=useState(false);const [bF,setBF]=useState(false);const [bC,setBC]=useState(false);const [bR,setBR]=useState(false);const [bO,setBO]=useState(false);
-  const [rta,setRta]=useState(true);
+  const [instr,setInstr]=useState(src.instrument||prefill.instrument||"");
+  const [sess,setSess]=useState(src.sessions||[]);
+  const [htf,setHtf]=useState(src.htfTimeframe||"");const [ltf,setLtf]=useState(src.ltfTimeframe||"");
+  const [mktType,setMktType]=useState(src.marketType||"trend");const [vol,setVol]=useState(src.volatility||"medium");
+  const [curStr,setCurStr]=useState(src.currentStructure||"");const [devWave,setDevWave]=useState(src.developingWave||"");
+  const [strStart,setStrStart]=useState(src.structureStart||"");const [fibT,setFibT]=useState(src.fibTarget||"");
+  const [scenL,setScenL]=useState(src.scenarioLogic||"");const [inv,setInv]=useState(src.invalidationLevel||"");
+  const [altM,setAltM]=useState(src.altMarkup||"");const [altP,setAltP]=useState(src.altProbability!=null?String(src.altProbability):"");
+  const [altC,setAltC]=useState(src.altConfirmation||"");const [altB,setAltB]=useState(src.altBiasChange||"");
+  const [eType,setEType]=useState(src.entryType||"");
+  const [ep,setEp]=useState(src.entryPoint!=null?String(src.entryPoint):prefill.entryPoint!=null?String(prefill.entryPoint):"");
+  const [sl2,setSl2]=useState(src.stopLoss!=null?String(src.stopLoss):prefill.stopLoss!=null?String(prefill.stopLoss):"");
+  const [tp2,setTp2]=useState(src.takeProfit!=null?String(src.takeProfit):prefill.takeProfit!=null?String(prefill.takeProfit):"");
+  const [rp,setRp]=useState(src.riskPercent!=null?String(src.riskPercent):prefill.riskPercent!=null?String(prefill.riskPercent):"");
+  const [ps,setPs]=useState(src.positionSize!=null?String(src.positionSize):prefill.positionSize!=null?String(prefill.positionSize):"");
+  const [cc,setCc]=useState(src.cancelConditions||"");
+  const [pE,setPE]=useState(src.psychEnergy||3);const [pF,setPF]=useState(src.psychFocus||3);
+  const [pC,setPC]=useState(src.psychCalm||3);const [pP,setPP]=useState(src.psychPressure||2);
+  const [pLS,setPLS]=useState(src.psychLossStreak||false);
+  const [bF,setBF]=useState(src.biasFOMO||false);const [bC2,setBC2]=useState(src.biasConfirmation||false);
+  const [bR,setBR]=useState(src.biasRevenge||false);const [bO,setBO]=useState(src.biasOverconfidence||false);
+  const [rta,setRta]=useState(src.readyToAcceptStop!==undefined?src.readyToAcceptStop:true);
   const aRR=useMemo(()=>{const e=parseFloat(ep),s=parseFloat(sl2),tp=parseFloat(tp2);if(!e||!s||!tp||e===s)return null;return Math.abs(tp-e)/Math.abs(e-s);},[ep,sl2,tp2]);
-  async function save(){if(!instr.trim()){alert(t.instrReq);return;}await addTrade({instrument:instr.toUpperCase(),sessions:sess,htfTimeframe:htf,ltfTimeframe:ltf,marketType:mktType,volatility:vol,currentStructure:curStr,developingWave:devWave,structureStart:strStart,fibTarget:fibT,scenarioLogic:scenL,invalidationLevel:inv,altMarkup:altM,altProbability:parseFloat(altP)||undefined,altConfirmation:altC,altBiasChange:altB,entryType:eType||undefined,entryPoint:parseFloat(ep)||undefined,stopLoss:parseFloat(sl2)||undefined,takeProfit:parseFloat(tp2)||undefined,plannedRR:prefill.plannedRR??aRR,riskPercent:parseFloat(rp)||undefined,positionSize:parseFloat(ps)||undefined,cancelConditions:cc,psychEnergy:pE,psychFocus:pF,psychCalm:pC,psychPressure:pP,psychLossStreak:pLS,biasFOMO:bF,biasConfirmation:bC,biasRevenge:bR,biasOverconfidence:bO,readyToAcceptStop:rta,status:"open"});onSaved();}
+
+  function buildData(){
+    return{instrument:instr.toUpperCase(),sessions:sess,htfTimeframe:htf,ltfTimeframe:ltf,
+      marketType:mktType,volatility:vol,currentStructure:curStr,developingWave:devWave,
+      structureStart:strStart,fibTarget:fibT,scenarioLogic:scenL,invalidationLevel:inv,
+      altMarkup:altM,altProbability:parseFloat(altP)||undefined,altConfirmation:altC,altBiasChange:altB,
+      entryType:eType||undefined,entryPoint:parseFloat(ep)||undefined,stopLoss:parseFloat(sl2)||undefined,
+      takeProfit:parseFloat(tp2)||undefined,plannedRR:prefill.plannedRR??aRR,
+      riskPercent:parseFloat(rp)||undefined,positionSize:parseFloat(ps)||undefined,cancelConditions:cc,
+      psychEnergy:pE,psychFocus:pF,psychCalm:pC,psychPressure:pP,psychLossStreak:pLS,
+      biasFOMO:bF,biasConfirmation:bC2,biasRevenge:bR,biasOverconfidence:bO,readyToAcceptStop:rta};
+  }
+
+  async function save(){
+    if(!instr.trim()){alert(t.instrReq);return;}
+    if(isEdit){
+      await updateTrade(editTrade.id,buildData());
+    } else {
+      await addTrade({...buildData(),status:isPlan?"plan":"open"});
+    }
+    onSaved();
+  }
+
   const headerPt=isDesktop?"max(40px,env(safe-area-inset-top))":"max(16px,env(safe-area-inset-top))";
+  const headerTitle=isEdit?t.editMode:isPlan?t.planTitle:t.newTrade;
+  const headerBg=isPlan?"#818CF820":isEdit?C.tintDim:undefined;
+
   return(<div style={{height:"100%",display:"flex",flexDirection:"column"}}>
     <div style={{padding:`${headerPt} 16px 16px`,display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:`1px solid ${C.border}`,background:C.bg,position:"sticky",top:0,zIndex:10}}>
       <button onClick={onBack} style={{color:C.text2,fontSize:24,lineHeight:1}}>←</button>
-      <span style={{fontSize:15,fontWeight:700,color:C.text}}>{t.newTrade}</span>
-      <button onClick={save} style={{padding:"7px 18px",borderRadius:20,background:C.tint,color:"#fff",fontSize:13,fontWeight:600}}>{t.save}</button>
+      <span style={{fontSize:15,fontWeight:700,color:isPlan?"#818CF8":C.text}}>{headerTitle}</span>
+      <button onClick={save} style={{padding:"7px 18px",borderRadius:20,background:isPlan?"#818CF8":C.tint,color:"#fff",fontSize:13,fontWeight:600}}>{isEdit?t.saveEdit:t.save}</button>
     </div>
     <div style={{flex:1,overflowY:"auto",padding:"12px 16px 100px",display:"flex",flexDirection:"column",gap:12}}>
-      {prefill.instrument&&<div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:12,background:C.tintDim,border:`1px solid ${C.tint}40`}}><span>⚡</span><div><div style={{fontSize:12,fontWeight:700,color:C.tint}}>{t.prefillBanner}</div><div style={{fontSize:11,color:C.text2}}>{prefill.instrument} · {prefill.direction==="long"?t.longBtn:t.shortBtn}{prefill.positionSize?` · ${prefill.positionSize} lot`:""}{prefill.plannedRR?` · R:R 1:${prefill.plannedRR.toFixed(2)}`:""}</div></div></div>}
+      {isPlan&&<div style={{padding:"10px 14px",borderRadius:12,background:"#818CF815",border:"1px solid #818CF830"}}><div style={{fontSize:12,fontWeight:700,color:"#818CF8",marginBottom:3}}>📋 {t.planTitle}</div><div style={{fontSize:11,color:C.text2,lineHeight:1.5}}>{t.planDesc}</div></div>}
+      {!isPlan&&!isEdit&&prefill.instrument&&<div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:12,background:C.tintDim,border:`1px solid ${C.tint}40`}}><span>⚡</span><div><div style={{fontSize:12,fontWeight:700,color:C.tint}}>{t.prefillBanner}</div><div style={{fontSize:11,color:C.text2}}>{prefill.instrument} · {prefill.direction==="long"?t.longBtn:t.shortBtn}{prefill.positionSize?` · ${prefill.positionSize} lot`:""}{prefill.plannedRR?` · R:R 1:${prefill.plannedRR.toFixed(2)}`:""}</div></div></div>}
       <Card><SectionHeader n="1" title={t.sec1}/>
         <Input label={t.instrLabel} value={instr} onChange={v=>setInstr(v.toUpperCase())} placeholder={t.instrPh}/>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}><Input label={t.htf} value={htf} onChange={setHtf} placeholder="H4"/><Input label={t.ltf} value={ltf} onChange={setLtf} placeholder="M15"/></div>
@@ -674,14 +742,14 @@ function NewTrade({onBack,onSaved,prefill={},isDesktop}){
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}><Input label={t.riskPctL} value={rp} onChange={setRp} type="number" placeholder="1"/><Input label={t.posSizeL} value={ps} onChange={setPs} type="number"/></div>
         <Input label={t.cancelCond} value={cc} onChange={setCc} placeholder={t.cancelPh} multiline/>
       </Card>
-      <Card><SectionHeader n="5" title={t.sec5}/>
+      {!isPlan&&<Card><SectionHeader n="5" title={t.sec5}/>
         <ScoreRow label={t.energy} value={pE} onChange={setPE}/><ScoreRow label={t.focus} value={pF} onChange={setPF}/>
         <ScoreRow label={t.calm} value={pC} onChange={setPC}/><ScoreRow label={t.pressure} value={pP} onChange={setPP}/>
         <Label style={{marginTop:8}}>{t.lossStreak}</Label>
         <Seg options={[{label:t.no,value:"no"},{label:t.yes,value:"yes"}]} value={pLS?"yes":"no"} onChange={v=>setPLS(v==="yes")}/>
         <Label style={{marginTop:8}}>{t.biases}</Label>
         <div style={{display:"flex",flexDirection:"column",gap:6}}>
-          <Toggle label={t.fomo} value={bF} onChange={setBF}/><Toggle label={t.biasConf} value={bC} onChange={setBC}/>
+          <Toggle label={t.fomo} value={bF} onChange={setBF}/><Toggle label={t.biasConf} value={bC2} onChange={setBC2}/>
           <Toggle label={t.biasRev} value={bR} onChange={setBR}/><Toggle label={t.biasOver} value={bO} onChange={setBO}/>
         </div>
         <div style={{marginTop:8,padding:14,borderRadius:14,background:rta?C.profit+"12":C.loss+"12",border:`1px solid ${rta?C.profit+"40":C.loss+"40"}`}}>
@@ -691,41 +759,116 @@ function NewTrade({onBack,onSaved,prefill={},isDesktop}){
             <button onClick={()=>setRta(false)} style={{flex:1,padding:10,borderRadius:10,fontWeight:700,fontSize:14,background:!rta?C.loss:C.bg3,color:!rta?"#fff":C.text2}}>{t.no}</button>
           </div>
         </div>
-      </Card>
+      </Card>}
     </div>
   </div>);
 }
-
+  const [instr,setInstr]=useState(prefill.instrument||"");const [sess,setSess]=useState([]);
+  const [htf,setHtf]=useState("");const [ltf,setLtf]=useState("");
+  const [mktType,setMktType]=useState("trend");const [vol,setVol]=useState("medium");
+  const [curStr,setCurStr]=useState("");const [devWave,setDevWave]=useState("");
+  const [strStart,setStrStart]=useState("");const [fibT,setFibT]=useState("");
+  const [scenL,setScenL]=useState("");const [inv,setInv]=useState("");
+  const [altM,setAltM]=useState("");const [altP,setAltP]=useState("");const [altC,setAltC]=useState("");const [altB,setAltB]=useState("");
+  const [eType,setEType]=useState("");
+  const [ep,setEp]=useState(prefill.entryPoint!=null?String(prefill.entryPoint):"");
+  const [sl2,setSl2]=useState(prefill.stopLoss!=null?String(prefill.stopLoss):"");
+  const [tp2,setTp2]=useState(prefill.takeProfit!=null?String(prefill.takeProfit):"");
+  const [rp,setRp]=useState(prefill.riskPercent!=null?String(prefill.riskPercent):"");
+  const [ps,setPs]=useState(prefill.positionSize!=null?String(prefill.positionSize):"");
+  const [cc,setCc]=useState("");
+  const [pE,setPE]=useState(3);const [pF,setPF]=useState(3);const [pC,setPC]=useState(3);const [pP,setPP]=useState(2);
+  const [pLS,setPLS]=useState(false);const [bF,setBF]=useState(false);const [bC,setBC]=useState(false);const [bR,setBR]=useState(false);const [bO,setBO]=useState(false);
+  const [rta,setRta]=useState(true);
+  const aRR=useMemo(()=>{const e=parseFloat(ep),s=parseFloat(sl2),tp=parseFloat(tp2);if(!e||!s||!tp||e===s)return null;return Math.abs(tp-e)/Math.abs(e-s);},[ep,sl2,tp2]);
+  async function save(){if(!instr.trim()){alert(t.instrReq);return;}await addTrade({instrument:instr.toUpperCase(),sessions:sess,htfTimeframe:htf,ltfTimeframe:ltf,marketType:mktType,volatility:vol,currentStructure:curStr,developingWave:devWave,structureStart:strStart,fibTarget:fibT,scenarioLogic:scenL,invalidationLevel:inv,altMarkup:altM,altProbability:parseFloat(altP)||undefined,altConfirmation:altC,altBiasChange:altB,entryType:eType||undefined,entryPoint:parseFloat(ep)||undefined,stopLoss:parseFloat(sl2)||undefined,takeProfit:parseFloat(tp2)||undefined,plannedRR:prefill.plannedRR??aRR,riskPercent:parseFloat(rp)||undefined,positionSize:parseFloat(ps)||undefined,cancelConditions:cc,psychEnergy:pE,psychFocus:pF,psychCalm:pC,psychPressure:pP,psychLossStreak:pLS,biasFOMO:bF,biasConfirmation:bC,biasRevenge:bR,biasOverconfidence:bO,readyToAcceptStop:rta,status:"open"});onSaved();}
 // ── Trade Detail ──────────────────────────────────────────────────────────────
-function TradeDetail({tradeId,onBack,isDesktop}){
+function TradeDetail({tradeId,onBack,onEdit,isDesktop}){
   const {trades,updateTrade,deleteTrade}=useTrades();const {t}=useLang();
   const trade=trades.find(x=>x.id===tradeId);
   const [closing,setClosing]=useState(false);
   const [rR,setRR]=useState("");const [rU,setRU]=useState("");const [mae,setMae]=useState("");const [mfe,setMfe]=useState("");
   const [tClass,setTClass]=useState("");const [concl,setConcl]=useState("");const [eT,setET]=useState("none");const [wR,setWR]=useState(true);
   if(!trade)return null;
+  const isPlan=trade.status==="plan";
   const close=async()=>{if(!rR){alert(t.resReq);return;}await updateTrade(trade.id,{status:"closed",resultR:parseFloat(rR),resultUSD:parseFloat(rU)||undefined,mae:parseFloat(mae)||undefined,mfe:parseFloat(mfe)||undefined,tradeClass:tClass||undefined,mainConclusion:concl,errorType:eT,wouldRepeat:wR});setClosing(false);};
   const del=()=>{if(confirm(t.delTradeConfirm)){deleteTrade(trade.id);onBack();}};
+  const confirmPlan=async()=>{await updateTrade(trade.id,{status:"open"});};
   const rC=trade.resultR==null?C.text:trade.resultR>0?C.profit:C.loss;
-  const Row=({label,value})=>value?<div style={{display:"flex",padding:"8px 0",borderBottom:`1px solid ${C.border}`,gap:12}}><span style={{fontSize:12,color:C.text3,minWidth:130,flexShrink:0}}>{label}</span><span style={{fontSize:12,color:C.text}}>{value}</span></div>:null;
+  const Row=({label,value})=>value!=null&&value!==""?<div style={{display:"flex",padding:"8px 0",borderBottom:`1px solid ${C.border}`,gap:12}}><span style={{fontSize:12,color:C.text3,minWidth:130,flexShrink:0}}>{label}</span><span style={{fontSize:12,color:C.text}}>{value}</span></div>:null;
   const headerPt=isDesktop?"max(40px,env(safe-area-inset-top))":"max(16px,env(safe-area-inset-top))";
   return(<div style={{height:"100%",display:"flex",flexDirection:"column"}}>
     <div style={{padding:`${headerPt} 16px 16px`,display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:`1px solid ${C.border}`,background:C.bg,position:"sticky",top:0,zIndex:10}}>
       <button onClick={onBack} style={{color:C.text2,fontSize:24}}>←</button>
-      <span style={{fontFamily:"'JetBrains Mono',monospace",fontWeight:700,color:C.text,fontSize:16}}>{trade.instrument}</span>
-      <button onClick={del} style={{color:C.loss,fontSize:13}}>{t.del}</button>
+      <span style={{fontFamily:"'JetBrains Mono',monospace",fontWeight:700,color:isPlan?"#818CF8":C.text,fontSize:16}}>{trade.instrument}{isPlan&&" 📋"}</span>
+      <div style={{display:"flex",gap:10,alignItems:"center"}}>
+        {/* Edit button */}
+        <button onClick={()=>onEdit(trade)} style={{fontSize:12,fontWeight:600,color:C.tint,padding:"5px 12px",borderRadius:10,border:`1px solid ${C.tint}40`,background:C.tintDim}}>{t.editTrade}</button>
+        <button onClick={del} style={{color:C.loss,fontSize:13}}>{t.del}</button>
+      </div>
     </div>
     <div style={{flex:1,overflowY:"auto",padding:"12px 16px 100px",display:"flex",flexDirection:"column",gap:12}}>
+
+      {/* Plan banner */}
+      {isPlan&&<div style={{padding:"10px 14px",borderRadius:12,background:"#818CF815",border:"1px solid #818CF830"}}><div style={{fontSize:12,fontWeight:700,color:"#818CF8",marginBottom:3}}>📋 {t.planTitle}</div><div style={{fontSize:11,color:C.text2,lineHeight:1.5}}>{t.planDesc}</div></div>}
+
+      {/* Header card */}
       <Card glow={trade.status==="closed"&&trade.resultR>0}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-          <div><div style={{fontSize:11,fontFamily:"'JetBrains Mono',monospace",color:C.text3,marginBottom:4}}>{new Date(trade.date).toLocaleDateString("ru-RU",{day:"2-digit",month:"short",year:"numeric"})}</div><div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>{trade.tradeClass&&<span style={{padding:"3px 10px",borderRadius:8,fontSize:12,fontWeight:700,background:(CLS_COLOR[trade.tradeClass]||C.text3)+"25",color:CLS_COLOR[trade.tradeClass]}}>{trade.tradeClass}</span>}{trade.entryType&&<span style={{fontSize:12,color:C.text3}}>W{trade.entryType}</span>}</div></div>
-          {trade.status==="open"?<span style={{fontSize:11,color:C.warning,fontWeight:700,background:C.warning+"20",padding:"4px 10px",borderRadius:8}}>OPEN</span>:<div style={{textAlign:"right"}}><div style={{fontSize:28,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:rC}}>{trade.resultR>=0?"+":""}{trade.resultR?.toFixed(2)}R</div>{trade.resultUSD!=null&&<div style={{fontSize:12,color:C.text3,fontFamily:"'JetBrains Mono',monospace"}}>${trade.resultUSD>=0?"+":""}{trade.resultUSD?.toFixed(2)}</div>}</div>}
+          <div>
+            <div style={{fontSize:11,fontFamily:"'JetBrains Mono',monospace",color:C.text3,marginBottom:4}}>{new Date(trade.date).toLocaleDateString("ru-RU",{day:"2-digit",month:"short",year:"numeric"})}</div>
+            <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+              {trade.tradeClass&&<span style={{padding:"3px 10px",borderRadius:8,fontSize:12,fontWeight:700,background:(CLS_COLOR[trade.tradeClass]||C.text3)+"25",color:CLS_COLOR[trade.tradeClass]}}>{trade.tradeClass}</span>}
+              {trade.entryType&&<span style={{fontSize:12,color:C.text3}}>W{trade.entryType}</span>}
+              {trade.marketType&&<span style={{fontSize:11,color:C.text3}}>{trade.marketType}</span>}
+            </div>
+          </div>
+          {isPlan?<span style={{fontSize:11,color:"#818CF8",fontWeight:700,background:"#818CF820",padding:"4px 10px",borderRadius:8}}>PLAN</span>:trade.status==="open"?<span style={{fontSize:11,color:C.warning,fontWeight:700,background:C.warning+"20",padding:"4px 10px",borderRadius:8}}>OPEN</span>:<div style={{textAlign:"right"}}><div style={{fontSize:28,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:rC}}>{trade.resultR>=0?"+":""}{trade.resultR?.toFixed(2)}R</div>{trade.resultUSD!=null&&<div style={{fontSize:12,color:C.text3,fontFamily:"'JetBrains Mono',monospace"}}>${trade.resultUSD>=0?"+":""}{trade.resultUSD?.toFixed(2)}</div>}</div>}
         </div>
       </Card>
-      {(trade.htfTimeframe||trade.sessions?.length>0)&&<Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:6}}>{t.timeframes}</div><Row label="HTF" value={trade.htfTimeframe}/><Row label="LTF" value={trade.ltfTimeframe}/>{trade.sessions?.length>0&&<Row label={t.sessions} value={trade.sessions.join(", ")}/>}</Card>}
-      {(trade.currentStructure||trade.scenarioLogic)&&<Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:6}}>{t.mainScen}</div><Row label={t.structure} value={trade.currentStructure}/><Row label={t.devWave} value={trade.developingWave}/><Row label={t.fibTarget} value={trade.fibTarget}/><Row label={t.invalidation} value={trade.invalidationLevel}/>{trade.scenarioLogic&&<div style={{marginTop:8,padding:"10px 12px",background:C.bg3,borderRadius:10}}><div style={{fontSize:11,color:C.text3,marginBottom:4}}>{t.logic}</div><div style={{fontSize:13,color:C.text,lineHeight:1.6}}>{trade.scenarioLogic}</div></div>}</Card>}
-      {(trade.entryPoint||trade.stopLoss)&&<Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:6}}>{t.tradePlan}</div><Row label={t.entryPoint} value={trade.entryPoint}/><Row label={t.stopLoss} value={trade.stopLoss}/><Row label={t.takeProfit} value={trade.takeProfit}/><Row label={t.plannedRR} value={trade.plannedRR?`1:${trade.plannedRR.toFixed(2)}`:null}/><Row label={t.riskPctL} value={trade.riskPercent?`${trade.riskPercent}%`:null}/></Card>}
+
+      {/* Timeframes */}
+      {(trade.htfTimeframe||trade.ltfTimeframe||trade.sessions?.length>0)&&<Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:6}}>{t.timeframes}</div><Row label="HTF" value={trade.htfTimeframe}/><Row label="LTF" value={trade.ltfTimeframe}/>{trade.sessions?.length>0&&<Row label={t.sessions} value={trade.sessions.join(", ")}/>}<Row label={t.vol} value={trade.volatility}/></Card>}
+
+      {/* Main scenario */}
+      {(trade.currentStructure||trade.scenarioLogic||trade.developingWave)&&<Card>
+        <div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:6}}>{t.mainScen}</div>
+        <Row label={t.structure} value={trade.currentStructure}/>
+        <Row label={t.devWave} value={trade.developingWave}/>
+        <Row label={t.structStart} value={trade.structureStart}/>
+        <Row label={t.fibTarget} value={trade.fibTarget}/>
+        <Row label={t.invalidation} value={trade.invalidationLevel}/>
+        {trade.scenarioLogic&&<div style={{marginTop:8,padding:"10px 12px",background:C.bg3,borderRadius:10}}><div style={{fontSize:11,color:C.text3,marginBottom:4}}>{t.logic}</div><div style={{fontSize:13,color:C.text,lineHeight:1.6}}>{trade.scenarioLogic}</div></div>}
+      </Card>}
+
+      {/* Alternative scenario — NOW SHOWN */}
+      {(trade.altMarkup||trade.altConfirmation||trade.altBiasChange)&&<Card style={{border:`1px solid #818CF830`}}>
+        <div style={{fontSize:12,fontWeight:700,color:"#818CF8",marginBottom:6}}>⚡ {t.altScenario}</div>
+        {trade.altMarkup&&<div style={{padding:"8px 12px",background:"#818CF810",borderRadius:8,marginBottom:8}}><div style={{fontSize:13,color:C.text,lineHeight:1.6}}>{trade.altMarkup}</div></div>}
+        <Row label={t.altProb2} value={trade.altProbability?`${trade.altProbability}%`:null}/>
+        <Row label={t.altBias} value={trade.altBiasChange}/>
+        <Row label={t.altConfirm} value={trade.altConfirmation}/>
+      </Card>}
+
+      {/* Trade plan */}
+      {(trade.entryPoint||trade.stopLoss||trade.plannedRR)&&<Card>
+        <div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:6}}>{t.tradePlan}</div>
+        <Row label={t.entryPoint} value={trade.entryPoint}/>
+        <Row label={t.stopLoss} value={trade.stopLoss}/>
+        <Row label={t.takeProfit} value={trade.takeProfit}/>
+        <Row label={t.plannedRR} value={trade.plannedRR?`1:${trade.plannedRR.toFixed(2)}`:null}/>
+        <Row label={t.riskPctL} value={trade.riskPercent?`${trade.riskPercent}%`:null}/>
+        <Row label={t.posSizeL} value={trade.positionSize?`${trade.positionSize} lot`:null}/>
+        {trade.cancelConditions&&<div style={{marginTop:8,padding:"8px 12px",background:C.bg3,borderRadius:8}}><div style={{fontSize:11,color:C.text3,marginBottom:3}}>{t.cancelCond}</div><div style={{fontSize:13,color:C.text}}>{trade.cancelConditions}</div></div>}
+      </Card>}
+
+      {/* Conclusion */}
       {trade.mainConclusion&&<Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:6}}>{t.conclusionT}</div><div style={{fontSize:13,color:C.text,lineHeight:1.6}}>{trade.mainConclusion}</div></Card>}
+
+      {/* Plan → confirm button */}
+      {isPlan&&<button onClick={confirmPlan} style={{padding:"14px",borderRadius:14,background:"linear-gradient(135deg,#818CF8,#6366F1)",color:"#fff",fontWeight:700,fontSize:15,boxShadow:"0 4px 20px #818CF840"}}>{t.confirmTrade}</button>}
+
+      {/* Open → close */}
       {trade.status==="open"&&!closing&&<button onClick={()=>setClosing(true)} style={{padding:"14px",borderRadius:14,background:C.tint,color:"#fff",fontWeight:700,fontSize:15}}>{t.closeTrade}</button>}
       {trade.status==="open"&&closing&&<Card>
         <div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:12}}>{t.tradeRes}</div>
@@ -736,6 +879,8 @@ function TradeDetail({tradeId,onBack,isDesktop}){
         <Input label={t.conclusion} value={concl} onChange={setConcl} placeholder={t.conclusionPh} multiline style={{marginTop:10}}/>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:12}}><button onClick={()=>setClosing(false)} style={{padding:12,borderRadius:12,background:C.bg3,color:C.text2,fontWeight:600}}>{t.cancel}</button><button onClick={close} style={{padding:12,borderRadius:12,background:C.tint,color:"#fff",fontWeight:700}}>{t.saveBtn}</button></div>
       </Card>}
+
+      {/* Closed → reopen */}
       {trade.status==="closed"&&<button onClick={()=>updateTrade(trade.id,{status:"open",resultR:undefined,resultUSD:undefined})} style={{padding:12,borderRadius:12,background:C.bg3,color:C.text2,border:`1px solid ${C.border}`,fontSize:13}}>{t.reopen}</button>}
     </div>
   </div>);
@@ -789,7 +934,7 @@ function Settings({isDesktop}){
     {/* Current journal card */}
     <div style={{padding:"0 16px 8px"}}>
       <div style={{background:C.tintDim,border:`1px solid ${C.tint}30`,borderRadius:14,padding:"12px 16px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div><div style={{fontSize:12,fontWeight:700,color:C.tint}}>{t.currentJournal}</div><div style={{fontSize:11,color:C.text2,marginTop:2}}>{trades.length} {t.trades} · {stats.open} {t.open.toLowerCase()} · {stats.total} {t.closed.toLowerCase()}</div></div>
+        <div><div style={{fontSize:12,fontWeight:700,color:C.tint}}>{t.currentJournal}</div><div style={{fontSize:11,color:C.text2,marginTop:2}}>{trades.length} {t.trades} · {stats.plans} 📋 · {stats.open} OPEN · {stats.total} {t.closed.toLowerCase()}</div></div>
         <div style={{fontSize:24,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:stats.totalR>=0?C.profit:C.loss}}>{stats.totalR>=0?"+":""}{stats.totalR.toFixed(1)}R</div>
       </div>
     </div>
@@ -974,13 +1119,19 @@ function BottomNav({active,onNav}){
 function AppInner(){
   const [screen,setScreen]=useState("dashboard");const [activeTab,setActiveTab]=useState("dashboard");
   const [selId,setSelId]=useState(null);const [prefill,setPrefill]=useState(null);
+  const [editTrade,setEditTrade]=useState(null);
   const {scale}=useScale();const {layout}=useLayout();
   const isDesktop=layout==="desktop";
 
-  const nav=id=>{if(id==="new"){setPrefill(null);setScreen("new");}else{setScreen(id);setActiveTab(id);}};
+  const nav=id=>{
+    if(id==="new"){setPrefill(null);setScreen("new");}
+    else if(id==="plan"){setScreen("plan");}
+    else{setScreen(id);setActiveTab(id);}
+  };
   const openTrade=id=>{setSelId(id);setScreen("trade");};
   const openInJournal=data=>{setPrefill(data);setScreen("new");};
-  const showNav=!["new","trade"].includes(screen);
+  const handleEdit=trade=>{setEditTrade(trade);setScreen("edit");};
+  const showNav=!["new","plan","edit","trade"].includes(screen);
 
   const content=(
     <>
@@ -989,8 +1140,10 @@ function AppInner(){
       {screen==="calc"&&<Calculator onOpenInJournal={openInJournal} isDesktop={isDesktop}/>}
       {screen==="stats"&&<Stats isDesktop={isDesktop}/>}
       {screen==="settings"&&<Settings isDesktop={isDesktop}/>}
-      {screen==="new"&&<NewTrade prefill={prefill||{}} onBack={()=>{setPrefill(null);setScreen(activeTab);}} onSaved={()=>{setPrefill(null);setScreen("journal");}} isDesktop={isDesktop}/>}
-      {screen==="trade"&&<TradeDetail tradeId={selId} onBack={()=>setScreen(activeTab)} isDesktop={isDesktop}/>}
+      {screen==="new"&&<NewTrade mode="new" prefill={prefill||{}} onBack={()=>{setPrefill(null);setScreen(activeTab);}} onSaved={()=>{setPrefill(null);setScreen("journal");}} isDesktop={isDesktop}/>}
+      {screen==="plan"&&<NewTrade mode="plan" prefill={{}} onBack={()=>setScreen(activeTab)} onSaved={()=>setScreen("journal")} isDesktop={isDesktop}/>}
+      {screen==="edit"&&editTrade&&<NewTrade mode="edit" editTrade={editTrade} prefill={{}} onBack={()=>{setEditTrade(null);setScreen("trade");}} onSaved={()=>{setEditTrade(null);setScreen("trade");}} isDesktop={isDesktop}/>}
+      {screen==="trade"&&<TradeDetail tradeId={selId} onBack={()=>setScreen(activeTab)} onEdit={handleEdit} isDesktop={isDesktop}/>}
     </>
   );
 
