@@ -763,25 +763,6 @@ function NewTrade({onBack,onSaved,prefill={},isDesktop,mode="new",editTrade=null
     </div>
   </div>);
 }
-  const [instr,setInstr]=useState(prefill.instrument||"");const [sess,setSess]=useState([]);
-  const [htf,setHtf]=useState("");const [ltf,setLtf]=useState("");
-  const [mktType,setMktType]=useState("trend");const [vol,setVol]=useState("medium");
-  const [curStr,setCurStr]=useState("");const [devWave,setDevWave]=useState("");
-  const [strStart,setStrStart]=useState("");const [fibT,setFibT]=useState("");
-  const [scenL,setScenL]=useState("");const [inv,setInv]=useState("");
-  const [altM,setAltM]=useState("");const [altP,setAltP]=useState("");const [altC,setAltC]=useState("");const [altB,setAltB]=useState("");
-  const [eType,setEType]=useState("");
-  const [ep,setEp]=useState(prefill.entryPoint!=null?String(prefill.entryPoint):"");
-  const [sl2,setSl2]=useState(prefill.stopLoss!=null?String(prefill.stopLoss):"");
-  const [tp2,setTp2]=useState(prefill.takeProfit!=null?String(prefill.takeProfit):"");
-  const [rp,setRp]=useState(prefill.riskPercent!=null?String(prefill.riskPercent):"");
-  const [ps,setPs]=useState(prefill.positionSize!=null?String(prefill.positionSize):"");
-  const [cc,setCc]=useState("");
-  const [pE,setPE]=useState(3);const [pF,setPF]=useState(3);const [pC,setPC]=useState(3);const [pP,setPP]=useState(2);
-  const [pLS,setPLS]=useState(false);const [bF,setBF]=useState(false);const [bC,setBC]=useState(false);const [bR,setBR]=useState(false);const [bO,setBO]=useState(false);
-  const [rta,setRta]=useState(true);
-  const aRR=useMemo(()=>{const e=parseFloat(ep),s=parseFloat(sl2),tp=parseFloat(tp2);if(!e||!s||!tp||e===s)return null;return Math.abs(tp-e)/Math.abs(e-s);},[ep,sl2,tp2]);
-  async function save(){if(!instr.trim()){alert(t.instrReq);return;}await addTrade({instrument:instr.toUpperCase(),sessions:sess,htfTimeframe:htf,ltfTimeframe:ltf,marketType:mktType,volatility:vol,currentStructure:curStr,developingWave:devWave,structureStart:strStart,fibTarget:fibT,scenarioLogic:scenL,invalidationLevel:inv,altMarkup:altM,altProbability:parseFloat(altP)||undefined,altConfirmation:altC,altBiasChange:altB,entryType:eType||undefined,entryPoint:parseFloat(ep)||undefined,stopLoss:parseFloat(sl2)||undefined,takeProfit:parseFloat(tp2)||undefined,plannedRR:prefill.plannedRR??aRR,riskPercent:parseFloat(rp)||undefined,positionSize:parseFloat(ps)||undefined,cancelConditions:cc,psychEnergy:pE,psychFocus:pF,psychCalm:pC,psychPressure:pP,psychLossStreak:pLS,biasFOMO:bF,biasConfirmation:bC,biasRevenge:bR,biasOverconfidence:bO,readyToAcceptStop:rta,status:"open"});onSaved();}
 // ── Trade Detail ──────────────────────────────────────────────────────────────
 function TradeDetail({tradeId,onBack,onEdit,isDesktop}){
   const {trades,updateTrade,deleteTrade}=useTrades();const {t}=useLang();
