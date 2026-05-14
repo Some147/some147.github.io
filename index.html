@@ -123,12 +123,56 @@ const T={
     confirmTrade:"✅ Подтвердить — открыть сделку",planSection:"Торговые планы",
     altScenario:"Альтернативный сценарий",altProb2:"Вероятность",
     plans:"Планы",editMode:"Редактирование",saveEdit:"Сохранить изменения",
+    glossary:{
+      "Win Rate":       "Процент прибыльных сделок от общего числа закрытых. WR ≥ 50% при PF > 1 — хороший результат.",
+      "Profit Factor":  "Отношение суммы всех профитов к сумме всех убытков. PF > 1.5 — хорошо, > 2 — отлично.",
+      "Avg Win":        "Средний размер прибыльной сделки в единицах R. Чем выше относительно Avg Loss — тем лучше.",
+      "Avg Loss":       "Средний размер убыточной сделки в единицах R. Должен быть меньше Avg Win.",
+      "Best Trade":     "Лучший результат среди закрытых сделок в единицах R.",
+      "Worst Trade":    "Худший результат среди закрытых сделок в единицах R.",
+      "R:R":            "Risk/Reward — соотношение потенциальной прибыли к риску. R:R 1:2 = при риске $100 цель $200.",
+      "R":              "Единица измерения риска. 1R = сумма вашего риска в сделке. +2.5R = прибыль в 2.5× риска.",
+      "MAE":            "Maximum Adverse Excursion — максимальное движение цены против вашей позиции до закрытия.",
+      "MFE":            "Maximum Favorable Excursion — максимальное благоприятное движение цены до закрытия.",
+      "Pip":            "Минимальное изменение цены. Forex: 4-й знак (0.0001). JPY-пары: 2-й знак (0.01).",
+      "Margin":         "Залог брокеру для открытия позиции. Зависит от размера позиции и кредитного плеча.",
+      "Lot":            "Стандартный лот = 100,000 единиц базовой валюты. Мини = 0.1 лота, Микро = 0.01 лота.",
+      "HTF":            "Higher Time Frame — старший таймфрейм (H4, D1) для определения общего направления тренда.",
+      "LTF":            "Lower Time Frame — младший таймфрейм (M5, M15) для поиска точной точки входа.",
+      "Fib":            "Уровни Фибоначчи. Цели: 1.272, 1.618, 2.0 от длины предыдущего импульса.",
+      "Invalidation":   "Уровень инвалидации — цена, при достижении которой сценарий считается несработавшим.",
+      "FOMO":           "Fear Of Missing Out — страх пропустить движение, провоцирующий импульсивные входы вне плана.",
+      "Confirmation":   "Подтверждающее искажение — поиск только тех данных, что совпадают с уже принятым решением.",
+      "Revenge":        "Revenge trading — попытка быстро отыграть убыток, нарушая правила управления рисками.",
+      "Overconfidence": "Переоценка вероятности успеха и своих способностей после серии прибыльных сделок.",
+      "PLAN":           "Торговый план — сценарий до подтверждения входа. Не учитывается в статистике до открытия.",
+      "OPEN":           "Открытая позиция — сделка активна, результат ещё не зафиксирован.",
+      "Leverage":       "Кредитное плечо — во сколько раз объём позиции превышает депозит. 1:100 = $1000 → $100,000.",
+      "Risk Amount":    "Денежная сумма, которой вы рискуете в этой сделке (Баланс × Риск%).",
+      "П/У":            "П = прибыльные сделки, У = убыточные сделки.",
+      "Волна":          "Волновой анализ Эллиотта. Импульс: 5 волн (1-2-3-4-5). Коррекция: 3 волны (A-B-C).",
+    },
     sAsia:"Азия",sLondon:"Лондон",sNY:"Нью-Йорк",sLonNY:"Лондон/НЙ",sLonAsia:"Лондон/Азия",
     pip:"Пип",typeL:"Тип",pipPerLot:"Пип/$лот",pipsLabel:"пипс",wW:"П",wL:"У",
     scaleCompact:"Компактный",scaleNormal:"Обычный",scaleLarge:"Крупный",
     layoutMobile:"Мобильный",layoutDesktop:"Рабочий стол",
     layoutMobileSub:"Вертикальный, одна колонка",layoutDesktopSub:"Боковая панель + контент",
     dbInfo:"База данных (IndexedDB)",dbInfoSub:"Данные хранятся в браузере отдельно от файла. При обновлении index.html данные сохраняются.",
+    // Supabase
+    supabaseSection:"Supabase (Облачная синхронизация)",
+    supabaseUrl:"Project URL",supabaseKey:"Anon Key",
+    supabaseSave:"Подключить",supabaseDisconnect:"Отключить Supabase",
+    supabaseConnected:"Подключено",supabaseOffline:"Только локально (IndexedDB)",
+    supabaseSync:"Синхронизировать всё в облако",supabaseSyncing:"Синхронизация...",
+    supabaseSynced:(n)=>`Синхронизировано ${n} сделок`,
+    supabaseError:"Ошибка подключения. Проверь URL и ключ.",
+    supabaseInfo:"Данные хранятся в твоём личном Supabase проекте. Anon key безопасен — без логина никто не увидит твои данные (RLS).",
+    authTitle:"Trader Journal",authSub:"Войдите чтобы синхронизировать данные",
+    authEmail:"Email",authPassword:"Пароль",authLogin:"Войти",authRegister:"Регистрация",
+    authLogout:"Выйти",authLoading:"Подождите...",authError:"Неверный email или пароль",
+    authToggleLogin:"Уже есть аккаунт? Войти",authToggleRegister:"Нет аккаунта? Зарегистрироваться",
+    authSkip:"Продолжить без облака",authUser:"Пользователь",
+    authPasswordHint:"Минимум 6 символов",
   },
   en:{
     home:"Home",journal:"Journal",calc:"Calculator",stats:"Statistics",settings:"Settings",
@@ -210,12 +254,56 @@ const T={
     confirmTrade:"✅ Confirm — Open Trade",planSection:"Trading Plans",
     altScenario:"Alternative Scenario",altProb2:"Probability",
     plans:"Plans",editMode:"Edit",saveEdit:"Save Changes",
+    glossary:{
+      "Win Rate":       "Percentage of winning trades out of all closed trades. WR ≥ 50% with PF > 1 is a good result.",
+      "Profit Factor":  "Ratio of total profits to total losses. PF > 1.5 is good, > 2 is excellent.",
+      "Avg Win":        "Average winning trade size in R units. Higher relative to Avg Loss = better.",
+      "Avg Loss":       "Average losing trade size in R units. Should be smaller than Avg Win.",
+      "Best Trade":     "Best result among closed trades in R units.",
+      "Worst Trade":    "Worst result among closed trades in R units.",
+      "R:R":            "Risk/Reward ratio. R:R 1:2 = risking $100 to make $200.",
+      "R":              "Risk unit. 1R = your risk amount per trade. +2.5R = profit of 2.5× your risk.",
+      "MAE":            "Maximum Adverse Excursion — max price move against your position before close.",
+      "MFE":            "Maximum Favorable Excursion — max favorable price move before close.",
+      "Pip":            "Minimum price change. Forex: 4th decimal (0.0001). JPY pairs: 2nd decimal (0.01).",
+      "Margin":         "Collateral required by broker to open a position. Depends on position size and leverage.",
+      "Lot":            "Standard lot = 100,000 units of base currency. Mini = 0.1 lot, Micro = 0.01 lot.",
+      "HTF":            "Higher Time Frame (H4, D1) — used to identify overall trend direction.",
+      "LTF":            "Lower Time Frame (M5, M15) — used to find precise entry points.",
+      "Fib":            "Fibonacci levels. Targets: 1.272, 1.618, 2.0 of the previous impulse length.",
+      "Invalidation":   "Invalidation level — price at which the scenario is considered failed.",
+      "FOMO":           "Fear Of Missing Out — impulse entries outside the plan driven by fear of missing a move.",
+      "Confirmation":   "Confirmation bias — seeking only data that confirms an already made decision.",
+      "Revenge":        "Revenge trading — trying to quickly recover a loss by breaking risk management rules.",
+      "Overconfidence": "Overestimating success probability and skills after a series of winning trades.",
+      "PLAN":           "Trading plan — scenario before entry confirmation. Not counted in stats until opened.",
+      "OPEN":           "Open position — trade is active, result not yet recorded.",
+      "Leverage":       "How many times position size exceeds deposit. 1:100 = $1,000 controls $100,000.",
+      "Risk Amount":    "Dollar amount you risk in this trade (Balance × Risk%).",
+      "W/L":            "W = winning trades, L = losing trades.",
+      "Wave":           "Elliott Wave analysis. Impulse: 5 waves (1-2-3-4-5). Correction: 3 waves (A-B-C).",
+    },
     sAsia:"Asia",sLondon:"London",sNY:"New York",sLonNY:"London/NY",sLonAsia:"London/Asia",
     pip:"Pip",typeL:"Type",pipPerLot:"Pip/$lot",pipsLabel:"pips",wW:"W",wL:"L",
     scaleCompact:"Compact",scaleNormal:"Normal",scaleLarge:"Large",
     layoutMobile:"Mobile",layoutDesktop:"Desktop",
     layoutMobileSub:"Vertical, single column",layoutDesktopSub:"Sidebar + content panel",
     dbInfo:"Database (IndexedDB)",dbInfoSub:"Data is stored in the browser separately from the file. Updating index.html keeps your data safe.",
+    // Supabase
+    supabaseSection:"Supabase (Cloud Sync)",
+    supabaseUrl:"Project URL",supabaseKey:"Anon Key",
+    supabaseSave:"Connect",supabaseDisconnect:"Disconnect Supabase",
+    supabaseConnected:"Connected",supabaseOffline:"Local only (IndexedDB)",
+    supabaseSync:"Sync all to cloud",supabaseSyncing:"Syncing...",
+    supabaseSynced:(n)=>`Synced ${n} trades`,
+    supabaseError:"Connection error. Check URL and key.",
+    supabaseInfo:"Data is stored in your personal Supabase project. Anon key is safe — without login nobody can see your data (RLS).",
+    authTitle:"Trader Journal",authSub:"Sign in to sync your data",
+    authEmail:"Email",authPassword:"Password",authLogin:"Sign In",authRegister:"Sign Up",
+    authLogout:"Sign Out",authLoading:"Please wait...",authError:"Invalid email or password",
+    authToggleLogin:"Already have an account? Sign in",authToggleRegister:"No account? Sign up",
+    authSkip:"Continue without cloud",authUser:"User",
+    authPasswordHint:"Minimum 6 characters",
   },
 };
 
@@ -328,7 +416,163 @@ async function migrateFromLS(){
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 
-// ── Trades Context ────────────────────────────────────────────────────────────
+// ── Supabase Layer ────────────────────────────────────────────────────────────
+// Keys stored in localStorage — never hardcoded in source
+const SB_URL_KEY="tj_sb_url";
+const SB_KEY_KEY="tj_sb_key";
+const SB_SESSION_KEY="tj_sb_session";
+
+function getSBConfig(){
+  return{
+    url:localStorage.getItem(SB_URL_KEY)||"",
+    key:localStorage.getItem(SB_KEY_KEY)||"",
+  };
+}
+function hasSBConfig(){const c=getSBConfig();return !!(c.url&&c.key);}
+
+// Low-level fetch wrapper for Supabase REST API
+async function sbFetch(path,options={}){
+  const {url,key}=getSBConfig();
+  if(!url||!key)throw new Error("No Supabase config");
+  const session=JSON.parse(localStorage.getItem(SB_SESSION_KEY)||"null");
+  const headers={
+    "Content-Type":"application/json",
+    "apikey":key,
+    "Authorization":`Bearer ${session?.access_token||key}`,
+    ...options.headers,
+  };
+  const res=await fetch(`${url}${path}`,{...options,headers});
+  if(!res.ok){const err=await res.text();throw new Error(err);}
+  const text=await res.text();
+  return text?JSON.parse(text):null;
+}
+
+// Auth
+async function sbSignUp(email,password){
+  const {url,key}=getSBConfig();
+  const res=await fetch(`${url}/auth/v1/signup`,{
+    method:"POST",headers:{"Content-Type":"application/json","apikey":key},
+    body:JSON.stringify({email,password}),
+  });
+  const data=await res.json();
+  if(data.error)throw new Error(data.error.message||data.error);
+  if(data.session)localStorage.setItem(SB_SESSION_KEY,JSON.stringify(data.session));
+  return data;
+}
+async function sbSignIn(email,password){
+  const {url,key}=getSBConfig();
+  const res=await fetch(`${url}/auth/v1/token?grant_type=password`,{
+    method:"POST",headers:{"Content-Type":"application/json","apikey":key},
+    body:JSON.stringify({email,password}),
+  });
+  const data=await res.json();
+  if(data.error_description||data.error)throw new Error(data.error_description||data.error);
+  localStorage.setItem(SB_SESSION_KEY,JSON.stringify(data));
+  return data;
+}
+async function sbSignOut(){
+  try{
+    await sbFetch("/auth/v1/logout",{method:"POST"});
+  }catch(e){}
+  localStorage.removeItem(SB_SESSION_KEY);
+}
+async function sbRefreshSession(){
+  try{
+    const session=JSON.parse(localStorage.getItem(SB_SESSION_KEY)||"null");
+    if(!session?.refresh_token)return null;
+    const {url,key}=getSBConfig();
+    const res=await fetch(`${url}/auth/v1/token?grant_type=refresh_token`,{
+      method:"POST",headers:{"Content-Type":"application/json","apikey":key},
+      body:JSON.stringify({refresh_token:session.refresh_token}),
+    });
+    const data=await res.json();
+    if(data.access_token){localStorage.setItem(SB_SESSION_KEY,JSON.stringify(data));return data;}
+    return null;
+  }catch{return null;}
+}
+function sbGetUser(){
+  const s=JSON.parse(localStorage.getItem(SB_SESSION_KEY)||"null");
+  return s?.user||null;
+}
+
+// Trades CRUD via Supabase REST
+async function sbGetAll(){
+  const data=await sbFetch("/rest/v1/trades?select=id,data,updated_at&order=updated_at.desc");
+  return (data||[]).map(r=>({...r.data,id:r.id}));
+}
+async function sbUpsert(trade){
+  const user=sbGetUser();
+  if(!user)throw new Error("Not authenticated");
+  await sbFetch("/rest/v1/trades",{
+    method:"POST",
+    headers:{"Prefer":"resolution=merge-duplicates"},
+    body:JSON.stringify({id:trade.id,user_id:user.id,data:trade,updated_at:new Date().toISOString()}),
+  });
+}
+async function sbDelete(id){
+  await sbFetch(`/rest/v1/trades?id=eq.${id}`,{method:"DELETE"});
+}
+async function sbClear(){
+  await sbFetch("/rest/v1/trades",{method:"DELETE",headers:{"Prefer":"return=minimal"}});
+}
+async function sbUpsertMany(trades){
+  const user=sbGetUser();
+  if(!user)throw new Error("Not authenticated");
+  const rows=trades.map(t=>({id:t.id,user_id:user.id,data:t,updated_at:new Date().toISOString()}));
+  await sbFetch("/rest/v1/trades",{
+    method:"POST",
+    headers:{"Prefer":"resolution=merge-duplicates"},
+    body:JSON.stringify(rows),
+  });
+}
+
+// ── Auth Context ──────────────────────────────────────────────────────────────
+const AuthCtx=createContext(null);
+const useAuth=()=>useContext(AuthCtx);
+function AuthProvider({children}){
+  const [user,setUser]=useState(()=>sbGetUser());
+  const [sbReady,setSbReady]=useState(false); // supabase configured + user logged in
+  const [sbConfigured,setSbConfigured]=useState(hasSBConfig);
+
+  useEffect(()=>{
+    if(!hasSBConfig()){setSbReady(false);return;}
+    // Try refresh session on load
+    sbRefreshSession().then(s=>{
+      const u=sbGetUser();
+      setUser(u);setSbReady(!!u);
+    });
+  },[]);
+
+  const login=async(email,password)=>{
+    await sbSignIn(email,password);
+    const u=sbGetUser();setUser(u);setSbReady(!!u);
+  };
+  const register=async(email,password)=>{
+    await sbSignUp(email,password);
+    // auto sign in after register
+    await sbSignIn(email,password);
+    const u=sbGetUser();setUser(u);setSbReady(!!u);
+  };
+  const logout=async()=>{
+    await sbSignOut();setUser(null);setSbReady(false);
+  };
+  const saveSBConfig=(url,key)=>{
+    localStorage.setItem(SB_URL_KEY,url.trim());
+    localStorage.setItem(SB_KEY_KEY,key.trim());
+    setSbConfigured(!!(url.trim()&&key.trim()));
+  };
+  const removeSBConfig=()=>{
+    localStorage.removeItem(SB_URL_KEY);localStorage.removeItem(SB_KEY_KEY);
+    localStorage.removeItem(SB_SESSION_KEY);
+    setUser(null);setSbReady(false);setSbConfigured(false);
+  };
+
+  return <AuthCtx.Provider value={{user,sbReady,sbConfigured,login,register,logout,saveSBConfig,removeSBConfig,setUser,setSbReady,setSbConfigured}}>
+    {children}
+  </AuthCtx.Provider>;
+}
+
+// ── Trades Context (with cloud sync) ─────────────────────────────────────────
 const TradesCtx=createContext(null);
 const useTrades=()=>useContext(TradesCtx);
 function computeStats(trades){
@@ -352,43 +596,98 @@ function computeStats(trades){
     cls};
 }
 function TradesProvider({children}){
+  const {sbReady}=useAuth();
   const [trades,setTrades]=useState([]);
   const [loaded,setLoaded]=useState(false);
+  const [syncing,setSyncing]=useState(false);
 
+  // Load trades — from Supabase if logged in, else IndexedDB
   useEffect(()=>{
-    migrateFromLS().then(()=>dbGetAll()).then(data=>{setTrades(data);setLoaded(true);})
-      .catch(()=>{setLoaded(true);});
-  },[]);
+    setLoaded(false);
+    const load=async()=>{
+      await migrateFromLS();
+      if(sbReady){
+        try{
+          const cloudTrades=await sbGetAll();
+          // Merge with local (cloud wins on conflicts)
+          const local=await dbGetAll();
+          const cloudIds=new Set(cloudTrades.map(t=>t.id));
+          const localOnly=local.filter(t=>!cloudIds.has(t.id));
+          // Push local-only trades to cloud
+          if(localOnly.length>0){await sbUpsertMany(localOnly).catch(()=>{});}
+          const merged=[...cloudTrades,...localOnly].sort((a,b)=>new Date(b.date)-new Date(a.date));
+          // Update local cache
+          for(const t of merged) await dbPut(t);
+          setTrades(merged);
+        }catch(e){
+          // Cloud failed — fallback to local
+          console.warn("Cloud load failed, using local:",e);
+          const local=await dbGetAll();
+          setTrades(local);
+        }
+      }else{
+        const local=await dbGetAll();
+        setTrades(local);
+      }
+      setLoaded(true);
+    };
+    load();
+  },[sbReady]);
 
   const stats=useMemo(()=>computeStats(trades),[trades]);
 
   const addTrade=useCallback(async d=>{
     const trade={...d,id:uid(),date:d.date||new Date().toISOString()};
     await dbPut(trade);
+    if(sbReady){sbUpsert(trade).catch(e=>console.warn("Cloud sync error:",e));}
     setTrades(p=>[trade,...p]);
-  },[]);
+  },[sbReady]);
 
   const updateTrade=useCallback(async(id,u)=>{
     setTrades(p=>{
       const next=p.map(t=>t.id===id?{...t,...u}:t);
       const tr=next.find(t=>t.id===id);
-      if(tr)dbPut(tr);
+      if(tr){
+        dbPut(tr);
+        if(sbReady)sbUpsert(tr).catch(e=>console.warn("Cloud sync error:",e));
+      }
       return next;
     });
-  },[]);
+  },[sbReady]);
 
   const deleteTrade=useCallback(async id=>{
     await dbDelete(id);
+    if(sbReady){sbDelete(id).catch(e=>console.warn("Cloud delete error:",e));}
     setTrades(p=>p.filter(t=>t.id!==id));
-  },[]);
+  },[sbReady]);
+
+  // Manual sync all local → cloud
+  const syncToCloud=useCallback(async()=>{
+    if(!sbReady)return;
+    setSyncing(true);
+    try{
+      const local=await dbGetAll();
+      await sbUpsertMany(local);
+      return local.length;
+    }finally{setSyncing(false);}
+  },[sbReady]);
+
+  // Clear — both local and cloud
+  const clearAll=useCallback(async()=>{
+    await dbClear();
+    if(sbReady){await sbClear().catch(()=>{});}
+    setTrades([]);
+  },[sbReady]);
 
   if(!loaded)return(
-    <div style={{height:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:C.bg}}>
-      <div style={{fontSize:13,color:C.text3,fontFamily:"'JetBrains Mono',monospace"}}>Loading...</div>
+    <div style={{height:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:C.bg,flexDirection:"column",gap:12}}>
+      <div style={{width:32,height:32,borderRadius:16,border:`2px solid ${C.tint}`,borderTopColor:"transparent",animation:"spin 0.8s linear infinite"}}/>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+      <div style={{fontSize:12,color:C.text3,fontFamily:"'JetBrains Mono',monospace"}}>{sbReady?"Загрузка из облака...":"Загрузка..."}</div>
     </div>
   );
 
-  return <TradesCtx.Provider value={{trades,stats,addTrade,updateTrade,deleteTrade}}>{children}</TradesCtx.Provider>;
+  return <TradesCtx.Provider value={{trades,stats,addTrade,updateTrade,deleteTrade,syncToCloud,syncing,clearAll}}>{children}</TradesCtx.Provider>;
 }
 
 // ── UI Primitives ─────────────────────────────────────────────────────────────
@@ -404,6 +703,51 @@ const Toggle=({label,value,onChange})=><button onClick={()=>onChange(!value)} st
 const SectionHeader=({n,title})=><div style={{display:"flex",alignItems:"center",gap:10,paddingBottom:12,borderBottom:`1px solid ${C.border}`,marginBottom:4}}><div style={{width:24,height:24,borderRadius:12,background:C.tintDim,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:C.tint,fontFamily:"'JetBrains Mono',monospace"}}>{n}</div><span style={{fontSize:14,fontWeight:700,color:C.text}}>{title}</span></div>;
 const Seg=({options,value,onChange})=><div style={{display:"flex",background:C.bg3,borderRadius:10,padding:3,gap:3}}>{options.map(o=><button key={o.value} onClick={()=>onChange(o.value)} style={{flex:1,padding:"7px 4px",borderRadius:8,fontSize:12,fontWeight:600,background:value===o.value?C.tint:"transparent",color:value===o.value?"#fff":C.text2}}>{o.label}</button>)}</div>;
 const StatCard=({label,value,sub,color})=><Card style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1,color:C.text3,textTransform:"uppercase",marginBottom:6}}>{label}</div><div style={{fontSize:22,fontWeight:700,color:color||C.text,fontFamily:"'JetBrains Mono',monospace",lineHeight:1.1}}>{value}</div>{sub&&<div style={{fontSize:11,color:C.text3,marginTop:4}}>{sub}</div>}</Card>;
+
+// ── Term Tooltip ──────────────────────────────────────────────────────────────
+function Term({word,children}){
+  const {t}=useLang();
+  const [show,setShow]=useState(false);
+  const [pos,setPos]=useState({x:0,y:0});
+  const ref=useRef();
+  const def=t.glossary?.[word];
+  if(!def) return <span>{children||word}</span>;
+
+  function handleEnter(e){
+    const rect=ref.current?.getBoundingClientRect();
+    if(!rect)return;
+    const tipW=260;
+    let x=rect.left;
+    if(x+tipW>window.innerWidth-8) x=window.innerWidth-tipW-8;
+    if(x<8) x=8;
+    const y=rect.bottom+6;
+    setPos({x,y});setShow(true);
+  }
+
+  return(
+    <>
+      <span ref={ref}
+        onMouseEnter={handleEnter} onMouseLeave={()=>setShow(false)}
+        onTouchStart={handleEnter} onTouchEnd={()=>setTimeout(()=>setShow(false),2000)}
+        style={{borderBottom:`1px dashed ${C.tint}80`,cursor:"help",color:"inherit"}}>
+        {children||word}
+      </span>
+      {show&&typeof document!=="undefined"&&ReactDOM.createPortal(
+        <div style={{
+          position:"fixed",left:pos.x,top:pos.y,zIndex:9999,
+          width:260,background:C.bg2,border:`1px solid ${C.tint}50`,
+          borderRadius:12,padding:"10px 14px",
+          boxShadow:`0 8px 32px #00000080, 0 0 0 1px ${C.tint}20`,
+          pointerEvents:"none",
+        }}>
+          <div style={{fontSize:12,fontWeight:700,color:C.tint,fontFamily:"'JetBrains Mono',monospace",marginBottom:5}}>{word}</div>
+          <div style={{fontSize:12,color:C.text2,lineHeight:1.6}}>{def}</div>
+        </div>,
+        document.body
+      )}
+    </>
+  );
+}
 
 // ── Settings Accordion Row ────────────────────────────────────────────────────
 function SettingsRow({icon,title,sub,children,danger}){
@@ -490,12 +834,12 @@ function Dashboard({onNav,onOpenTrade,isDesktop}){
     </div>
     {trades.filter(x=>x.status==="closed").length>=2&&<div style={{padding:"0 16px 12px"}}><Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:8}}>{t.equityCurve}</div><EquityChart trades={trades}/></Card></div>}
     <div style={{padding:"0 16px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
-      <StatCard label="Win Rate" value={`${stats.winRate.toFixed(0)}%`} sub={`${stats.wins}${t.wW} / ${stats.losses}${t.wL}`} color={stats.winRate>=50?C.profit:C.loss}/>
-      <StatCard label="Profit Factor" value={stats.pf===Infinity?"∞":stats.pf===0?"—":stats.pf.toFixed(2)} color={stats.pf>=1.5?C.profit:stats.pf>=1?C.warning:C.loss}/>
-      <StatCard label={t.avgWin} value={stats.avgWin?`+${stats.avgWin.toFixed(2)}R`:"—"} color={C.profit}/>
-      <StatCard label={t.avgLoss} value={stats.avgLoss?`-${stats.avgLoss.toFixed(2)}R`:"—"} color={C.loss}/>
-      <StatCard label={t.bestTrade} value={stats.best?`${stats.best>0?"+":""}${stats.best.toFixed(1)}R`:"—"} color={C.profit}/>
-      <StatCard label={t.worstTrade} value={stats.worst?`${stats.worst.toFixed(1)}R`:"—"} color={C.loss}/>
+      <Card style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1,color:C.text3,textTransform:"uppercase",marginBottom:6}}><Term word="Win Rate">WIN RATE</Term></div><div style={{fontSize:22,fontWeight:700,color:stats.winRate>=50?C.profit:C.loss,fontFamily:"'JetBrains Mono',monospace",lineHeight:1.1}}>{`${stats.winRate.toFixed(0)}%`}</div><div style={{fontSize:11,color:C.text3,marginTop:4}}><Term word="П/У">{`${stats.wins}${t.wW} / ${stats.losses}${t.wL}`}</Term></div></Card>
+      <Card style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1,color:C.text3,textTransform:"uppercase",marginBottom:6}}><Term word="Profit Factor">PROFIT FACTOR</Term></div><div style={{fontSize:22,fontWeight:700,color:stats.pf>=1.5?C.profit:stats.pf>=1?C.warning:C.loss,fontFamily:"'JetBrains Mono',monospace",lineHeight:1.1}}>{stats.pf===Infinity?"∞":stats.pf===0?"—":stats.pf.toFixed(2)}</div></Card>
+      <Card style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1,color:C.text3,textTransform:"uppercase",marginBottom:6}}><Term word="Avg Win">AVG WIN</Term></div><div style={{fontSize:22,fontWeight:700,color:C.profit,fontFamily:"'JetBrains Mono',monospace",lineHeight:1.1}}>{stats.avgWin?`+${stats.avgWin.toFixed(2)}R`:"—"}</div></Card>
+      <Card style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1,color:C.text3,textTransform:"uppercase",marginBottom:6}}><Term word="Avg Loss">AVG LOSS</Term></div><div style={{fontSize:22,fontWeight:700,color:C.loss,fontFamily:"'JetBrains Mono',monospace",lineHeight:1.1}}>{stats.avgLoss?`-${stats.avgLoss.toFixed(2)}R`:"—"}</div></Card>
+      <Card style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1,color:C.text3,textTransform:"uppercase",marginBottom:6}}><Term word="Best Trade">BEST TRADE</Term></div><div style={{fontSize:22,fontWeight:700,color:C.profit,fontFamily:"'JetBrains Mono',monospace",lineHeight:1.1}}>{stats.best?`${stats.best>0?"+":""}${stats.best.toFixed(1)}R`:"—"}</div></Card>
+      <Card style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontFamily:"'JetBrains Mono',monospace",letterSpacing:1,color:C.text3,textTransform:"uppercase",marginBottom:6}}><Term word="Worst Trade">WORST TRADE</Term></div><div style={{fontSize:22,fontWeight:700,color:C.loss,fontFamily:"'JetBrains Mono',monospace",lineHeight:1.1}}>{stats.worst?`${stats.worst.toFixed(1)}R`:"—"}</div></Card>
     </div>
     {stats.total>0&&<div style={{padding:"0 16px 10px"}}><Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:10}}>{t.tradeClasses}</div><div style={{display:"flex",justifyContent:"space-around"}}>{["A+","A","B","C","D"].map(c=><div key={c} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{width:10,height:10,borderRadius:5,background:CLS_COLOR[c]}}/><span style={{fontSize:11,color:C.text2,fontWeight:600}}>{c}</span><span style={{fontSize:16,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:C.text}}>{stats.cls[c]}</span></div>)}</div></Card></div>}
     {stats.open>0&&<div style={{margin:"0 16px 10px",padding:"10px 14px",borderRadius:12,background:C.warning+"12",border:`1px solid ${C.warning}25`,display:"flex",alignItems:"center",gap:8}}><span style={{color:C.warning}}>⚡</span><span style={{fontSize:13,color:C.warning,fontWeight:600}}>{stats.open} {t.openPos}</span></div>}
@@ -580,7 +924,11 @@ function Calculator({onOpenInJournal,isDesktop}){
       <Card>
         <Label>{t.instrument}</Label>
         <div style={{display:"flex",gap:8,marginBottom:8}}><input value={sym} onChange={e=>{setSym(e.target.value.toUpperCase());setShowPop(false);}} style={{flex:1,background:C.bg3,border:`1px solid ${C.border}`,borderRadius:10,color:C.text,fontSize:16,fontWeight:600,padding:"10px 12px",fontFamily:"'JetBrains Mono',monospace"}}/><button onClick={()=>setShowPop(p=>!p)} style={{padding:"0 14px",background:C.bg3,border:`1px solid ${C.border}`,borderRadius:10,color:C.text2,fontSize:16}}>{showPop?"▲":"▼"}</button></div>
-        <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:4}}><span style={{fontSize:11,color:C.text3}}>{t.pip}: <b style={{color:C.tint}}>{info.pip}</b></span><span style={{fontSize:11,color:C.text3}}>{t.typeL}: <b style={{color:C.tint}}>{info.label}</b></span><span style={{fontSize:11,color:C.text3}}>{t.pipPerLot}: <b style={{color:C.tint}}>${calc.pvl.toFixed(2)}</b></span></div>
+        <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:4}}>
+          <span style={{fontSize:11,color:C.text3}}><Term word="Pip">{t.pip}</Term>: <b style={{color:C.tint}}>{info.pip}</b></span>
+          <span style={{fontSize:11,color:C.text3}}>{t.typeL}: <b style={{color:C.tint}}>{info.label}</b></span>
+          <span style={{fontSize:11,color:C.text3}}><Term word="Pip">{t.pipPerLot}</Term>: <b style={{color:C.tint}}>${calc.pvl.toFixed(2)}</b></span>
+        </div>
         {showPop&&<div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>{POPULAR.map(s=><button key={s} onClick={()=>{setSym(s);setShowPop(false);}} style={{padding:"4px 10px",borderRadius:8,fontSize:12,fontWeight:600,background:sym===s?C.tint:C.bg3,color:sym===s?"#fff":C.text2,border:`1px solid ${sym===s?C.tint:C.border}`}}>{s}</button>)}</div>}
       </Card>
       <Card><Label>{t.direction}</Label><div style={{display:"flex",gap:10}}>{["long","short"].map(d=>{const a=dir===d,col=d==="long"?C.profit:C.loss;return<button key={d} onClick={()=>setDir(d)} style={{flex:1,padding:"12px",borderRadius:12,fontWeight:700,fontSize:15,background:a?col+"20":C.bg3,color:a?col:C.text2,border:`1.5px solid ${a?col:C.border}`}}>{d==="long"?t.longBtn:t.shortBtn}</button>;})} </div></Card>
@@ -588,9 +936,9 @@ function Calculator({onOpenInJournal,isDesktop}){
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}><Input label={t.balance} value={bal} onChange={setBal} type="number" prefix="$"/><Input label={t.riskPct} value={risk} onChange={setRisk} type="number" suffix="%"/></div>
         <Label>{t.quickBal}</Label><QB values={[5000,10000,25000,50000,100000]} selected={parseFloat(bal)} onSel={v=>setBal(String(v))} fmt={v=>`$${v>=1000?v/1000+"k":v}`}/>
         <div style={{marginTop:10}}><Label>{t.riskLevel}</Label><QB values={[0.5,1,1.5,2,3,5]} selected={parseFloat(risk)} onSel={v=>setRisk(String(v))} fmt={v=>`${v}%`}/></div>
-        <div style={{marginTop:10,background:C.tintDim,borderRadius:10,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",border:`1px solid ${C.tint}30`}}><span style={{fontSize:13,color:C.text3}}>{t.riskAmt}</span><span style={{fontSize:18,fontWeight:700,color:C.tint,fontFamily:"'JetBrains Mono',monospace"}}>${calc.rU.toFixed(2)}</span></div>
+        <div style={{marginTop:10,background:C.tintDim,borderRadius:10,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",border:`1px solid ${C.tint}30`}}><span style={{fontSize:13,color:C.text3}}><Term word="Risk Amount">{t.riskAmt}</Term></span><span style={{fontSize:18,fontWeight:700,color:C.tint,fontFamily:"'JetBrains Mono',monospace"}}>${calc.rU.toFixed(2)}</span></div>
       </Card>
-      <Card><Input label={t.leverage} value={lev} onChange={setLev} type="number" prefix="1:" style={{marginBottom:10}}/><QB values={[1,2,5,10,20,50,100,200,500]} selected={parseFloat(lev)} onSel={v=>setLev(String(v))} fmt={v=>`1:${v}`}/></Card>
+      <Card><Input label={<Term word="Leverage">{t.leverage}</Term>} value={lev} onChange={setLev} type="number" prefix="1:" style={{marginBottom:10}}/><QB values={[1,2,5,10,20,50,100,200,500]} selected={parseFloat(lev)} onSel={v=>setLev(String(v))} fmt={v=>`1:${v}`}/></Card>
       <Card>
         <Input label={t.entryPrice} value={entry} onChange={setEntry} type="number" placeholder="0.00000" style={{marginBottom:10}}/>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}><span style={{fontSize:11,fontWeight:700,color:C.loss}}>{t.stopLoss.toUpperCase()}</span><div style={{display:"flex",gap:4}}>{[{label:t.priceM,value:"price"},{label:t.pipsM,value:"pips"}].map(m=><button key={m.value} onClick={()=>setSlM(m.value)} style={{padding:"4px 10px",borderRadius:6,fontSize:11,fontWeight:600,background:slM===m.value?C.tint:C.bg3,color:slM===m.value?"#fff":C.text2}}>{m.label}</button>)}</div></div>
@@ -602,13 +950,13 @@ function Calculator({onOpenInJournal,isDesktop}){
       </Card>
       {calc.lots>0?<>
         <Card glow><div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:6}}>{t.resultTitle}</div>
-          <RR label={t.lotSize} value={fL(calc.lots)} color={dir==="long"?C.profit:C.loss} big/>
+          <RR label={<Term word="Lot">{t.lotSize}</Term>} value={fL(calc.lots)} color={dir==="long"?C.profit:C.loss} big/>
           <RR label={t.units} value={calc.units>0?Math.round(calc.units).toLocaleString("ru-RU"):"—"}/>
-          <RR label={t.riskUSD} value={`$${calc.rU.toFixed(2)}`} color={C.loss}/>
-          <RR label={t.slPips} value={`${calc.slp.toFixed(1)}`}/>
-          {calc.marg>0&&<RR label={t.margin} value={`$${calc.marg.toFixed(2)}`}/>}
+          <RR label={<Term word="Risk Amount">{t.riskUSD}</Term>} value={`$${calc.rU.toFixed(2)}`} color={C.loss}/>
+          <RR label={<Term word="Pip">{t.slPips}</Term>} value={`${calc.slp.toFixed(1)}`}/>
+          {calc.marg>0&&<RR label={<Term word="Margin">{t.margin}</Term>} value={`$${calc.marg.toFixed(2)}`}/>}
           {calc.profU>0&&<RR label={t.potProfit} value={`$${calc.profU.toFixed(2)}`} color={C.profit}/>}
-          {calc.rr>0&&<RR label="R:R" value={`1:${calc.rr.toFixed(2)}`} color={calc.rr>=2?C.profit:calc.rr>=1?C.warning:C.loss}/>}
+          {calc.rr>0&&<RR label={<Term word="R:R">R:R</Term>} value={`1:${calc.rr.toFixed(2)}`} color={calc.rr>=2?C.profit:calc.rr>=1?C.warning:C.loss}/>}
         </Card>
         <button onClick={send} style={{width:"100%",padding:"14px",borderRadius:14,background:`linear-gradient(135deg,${C.tint},#00A876)`,color:"#fff",fontWeight:700,fontSize:15,display:"flex",alignItems:"center",justifyContent:"center",gap:8,boxShadow:`0 4px 20px ${C.tint}40`}}>{t.openInJournal}</button>
       </>:<div style={{textAlign:"center",padding:"28px 16px",border:`1px dashed ${C.border}`,borderRadius:16}}><div style={{fontSize:24,marginBottom:8}}>🎯</div><div style={{color:C.text3,fontSize:13}}>{t.calcHint}</div></div>}
@@ -627,12 +975,15 @@ function Stats({isDesktop}){
     <div style={{padding:pt}}><div style={{fontSize:26,fontWeight:700,color:C.text}}>{t.statsTitle}</div></div>
     <div style={{padding:"0 16px",display:"flex",flexDirection:"column",gap:12}}>
       <Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:6}}>{t.overallStats}</div>
-        <MR label={t.totalTrades} value={stats.total}/><MR label="Win Rate" value={`${stats.winRate.toFixed(1)}%`} color={stats.winRate>=50?C.profit:C.loss}/>
-        <MR label="Profit Factor" value={stats.pf===Infinity?"∞":stats.pf.toFixed(2)} color={stats.pf>=1.5?C.profit:C.loss}/>
-        <MR label={t.totalR} value={`${stats.totalR>=0?"+":""}${stats.totalR.toFixed(2)}R`} color={stats.totalR>=0?C.profit:C.loss}/>
+        <MR label={t.totalTrades} value={stats.total}/>
+        <MR label={<Term word="Win Rate">Win Rate</Term>} value={`${stats.winRate.toFixed(1)}%`} color={stats.winRate>=50?C.profit:C.loss}/>
+        <MR label={<Term word="Profit Factor">Profit Factor</Term>} value={stats.pf===Infinity?"∞":stats.pf.toFixed(2)} color={stats.pf>=1.5?C.profit:C.loss}/>
+        <MR label={<Term word="R">{t.totalR}</Term>} value={`${stats.totalR>=0?"+":""}${stats.totalR.toFixed(2)}R`} color={stats.totalR>=0?C.profit:C.loss}/>
         <MR label="Total USD" value={`${stats.totalUSD>=0?"+":""}$${Math.abs(stats.totalUSD).toFixed(2)}`} color={stats.totalUSD>=0?C.profit:C.loss}/>
-        <MR label={t.avgWin} value={`+${stats.avgWin.toFixed(2)}R`} color={C.profit}/><MR label={t.avgLoss} value={`-${stats.avgLoss.toFixed(2)}R`} color={C.loss}/>
-        <MR label={t.bestTrade} value={`${stats.best>=0?"+":""}${stats.best.toFixed(2)}R`} color={C.profit}/><MR label={t.worstTrade} value={`${stats.worst.toFixed(2)}R`} color={C.loss}/>
+        <MR label={<Term word="Avg Win">Avg Win</Term>} value={`+${stats.avgWin.toFixed(2)}R`} color={C.profit}/>
+        <MR label={<Term word="Avg Loss">Avg Loss</Term>} value={`-${stats.avgLoss.toFixed(2)}R`} color={C.loss}/>
+        <MR label={<Term word="Best Trade">Best Trade</Term>} value={`${stats.best>=0?"+":""}${stats.best.toFixed(2)}R`} color={C.profit}/>
+        <MR label={<Term word="Worst Trade">Worst Trade</Term>} value={`${stats.worst.toFixed(2)}R`} color={C.loss}/>
       </Card>
       {mR.length>0&&<Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:6}}>{t.byMonth}</div>{mR.map(([mo,r])=><div key={mo} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:`1px solid ${C.border}`}}><span style={{fontSize:12,color:C.text3,fontFamily:"'JetBrains Mono',monospace",minWidth:60}}>{mo}</span><div style={{flex:1,height:6,background:C.bg3,borderRadius:3,overflow:"hidden"}}><div style={{height:"100%",borderRadius:3,width:`${Math.min(100,Math.abs(r)/Math.max(...mR.map(([,v])=>Math.abs(v)))*100)}%`,background:r>=0?C.profit:C.loss}}/></div><span style={{fontSize:12,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:r>=0?C.profit:C.loss,minWidth:55,textAlign:"right"}}>{r>=0?"+":""}{r.toFixed(2)}R</span></div>)}</Card>}
       {bI.length>0&&<Card><div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:6}}>{t.byInstr}</div>{bI.map(([s2,d])=><div key={s2} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:`1px solid ${C.border}`}}><span style={{fontSize:12,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:C.text,minWidth:70}}>{s2}</span><span style={{fontSize:11,color:C.text3}}>{d.count} · WR {(d.wins/d.count*100).toFixed(0)}%</span><span style={{marginLeft:"auto",fontSize:13,fontWeight:700,fontFamily:"'JetBrains Mono',monospace",color:d.r>=0?C.profit:C.loss}}>{d.r>=0?"+":""}{d.r.toFixed(2)}R</span></div>)}</Card>}
@@ -709,7 +1060,7 @@ function NewTrade({onBack,onSaved,prefill={},isDesktop,mode="new",editTrade=null
       {!isPlan&&!isEdit&&prefill.instrument&&<div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:12,background:C.tintDim,border:`1px solid ${C.tint}40`}}><span>⚡</span><div><div style={{fontSize:12,fontWeight:700,color:C.tint}}>{t.prefillBanner}</div><div style={{fontSize:11,color:C.text2}}>{prefill.instrument} · {prefill.direction==="long"?t.longBtn:t.shortBtn}{prefill.positionSize?` · ${prefill.positionSize} lot`:""}{prefill.plannedRR?` · R:R 1:${prefill.plannedRR.toFixed(2)}`:""}</div></div></div>}
       <Card><SectionHeader n="1" title={t.sec1}/>
         <Input label={t.instrLabel} value={instr} onChange={v=>setInstr(v.toUpperCase())} placeholder={t.instrPh}/>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}><Input label={t.htf} value={htf} onChange={setHtf} placeholder="H4"/><Input label={t.ltf} value={ltf} onChange={setLtf} placeholder="M15"/></div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}><Input label={<Term word="HTF">{t.htf}</Term>} value={htf} onChange={setHtf} placeholder="H4"/><Input label={<Term word="LTF">{t.ltf}</Term>} value={ltf} onChange={setLtf} placeholder="M15"/></div>
         <Label>{t.sessions}</Label><div style={{display:"flex",flexWrap:"wrap",gap:8}}>{SESS.map(s=>{const a=sess.includes(s);return<button key={s} onClick={()=>setSess(p=>a?p.filter(x=>x!==s):[...p,s])} style={{padding:"6px 14px",borderRadius:20,fontSize:12,fontWeight:600,background:a?C.tint:C.bg3,color:a?"#fff":C.text2,border:`1px solid ${a?C.tint:C.border}`}}>{s}</button>;})}</div>
         <Label>{t.mktType}</Label><Seg options={[{label:t.trend,value:"trend"},{label:t.correction,value:"correction"},{label:t.range,value:"range"}]} value={mktType} onChange={setMktType}/>
         <Label>{t.vol}</Label><Seg options={[{label:t.low,value:"low"},{label:t.medium,value:"medium"},{label:t.high,value:"high"}]} value={vol} onChange={setVol}/>
@@ -717,7 +1068,7 @@ function NewTrade({onBack,onSaved,prefill={},isDesktop,mode="new",editTrade=null
       <Card><SectionHeader n="2" title={t.sec2}/>
         <Input label={t.structure} value={curStr} onChange={setCurStr} placeholder={t.structPh}/>
         <Input label={t.devWave} value={devWave} onChange={setDevWave} placeholder={t.devWavePh}/>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}><Input label={t.structStart} value={strStart} onChange={setStrStart}/><Input label={t.fibTarget} value={fibT} onChange={setFibT} placeholder={t.fibPh}/></div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}><Input label={t.structStart} value={strStart} onChange={setStrStart}/><Input label={<Term word="Fib">{t.fibTarget}</Term>} value={fibT} onChange={setFibT} placeholder={t.fibPh}/></div>
         <Input label={t.scenLogic} value={scenL} onChange={setScenL} placeholder={t.scenPh} multiline/>
         <Input label={t.invalidation} value={inv} onChange={setInv}/>
       </Card>
@@ -737,7 +1088,7 @@ function NewTrade({onBack,onSaved,prefill={},isDesktop,mode="new",editTrade=null
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}><Input label={t.entryPoint} value={ep} onChange={setEp} type="number" placeholder="0.00"/><Input label={t.stopLoss} value={sl2} onChange={setSl2} type="number" placeholder="0.00"/></div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           <Input label={t.takeProfit} value={tp2} onChange={setTp2} type="number" placeholder="0.00"/>
-          <div><Label>{t.plannedRR}</Label><div style={{background:aRR?(aRR>=2?C.profit+"20":aRR>=1?C.warning+"20":C.loss+"20"):C.bg3,borderRadius:10,padding:"10px 12px",textAlign:"center",fontWeight:700,fontSize:17,fontFamily:"'JetBrains Mono',monospace",color:aRR?(aRR>=2?C.profit:aRR>=1?C.warning:C.loss):C.text3}}>{aRR?`1:${aRR.toFixed(2)}`:"—"}</div></div>
+          <div><Label><Term word="R:R">{t.plannedRR}</Term></Label><div style={{background:aRR?(aRR>=2?C.profit+"20":aRR>=1?C.warning+"20":C.loss+"20"):C.bg3,borderRadius:10,padding:"10px 12px",textAlign:"center",fontWeight:700,fontSize:17,fontFamily:"'JetBrains Mono',monospace",color:aRR?(aRR>=2?C.profit:aRR>=1?C.warning:C.loss):C.text3}}>{aRR?`1:${aRR.toFixed(2)}`:"—"}</div></div>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}><Input label={t.riskPctL} value={rp} onChange={setRp} type="number" placeholder="1"/><Input label={t.posSizeL} value={ps} onChange={setPs} type="number"/></div>
         <Input label={t.cancelCond} value={cc} onChange={setCc} placeholder={t.cancelPh} multiline/>
@@ -749,8 +1100,10 @@ function NewTrade({onBack,onSaved,prefill={},isDesktop,mode="new",editTrade=null
         <Seg options={[{label:t.no,value:"no"},{label:t.yes,value:"yes"}]} value={pLS?"yes":"no"} onChange={v=>setPLS(v==="yes")}/>
         <Label style={{marginTop:8}}>{t.biases}</Label>
         <div style={{display:"flex",flexDirection:"column",gap:6}}>
-          <Toggle label={t.fomo} value={bF} onChange={setBF}/><Toggle label={t.biasConf} value={bC2} onChange={setBC2}/>
-          <Toggle label={t.biasRev} value={bR} onChange={setBR}/><Toggle label={t.biasOver} value={bO} onChange={setBO}/>
+          <Toggle label={<Term word="FOMO">{t.fomo}</Term>} value={bF} onChange={setBF}/>
+          <Toggle label={<Term word="Confirmation">{t.biasConf}</Term>} value={bC2} onChange={setBC2}/>
+          <Toggle label={<Term word="Revenge">{t.biasRev}</Term>} value={bR} onChange={setBR}/>
+          <Toggle label={<Term word="Overconfidence">{t.biasOver}</Term>} value={bO} onChange={setBO}/>
         </div>
         <div style={{marginTop:8,padding:14,borderRadius:14,background:rta?C.profit+"12":C.loss+"12",border:`1px solid ${rta?C.profit+"40":C.loss+"40"}`}}>
           <div style={{fontSize:13,color:C.text,marginBottom:10}}>{t.readyQ}</div>
@@ -837,9 +1190,9 @@ function TradeDetail({tradeId,onBack,onEdit,isDesktop}){
         <Row label={t.entryPoint} value={trade.entryPoint}/>
         <Row label={t.stopLoss} value={trade.stopLoss}/>
         <Row label={t.takeProfit} value={trade.takeProfit}/>
-        <Row label={t.plannedRR} value={trade.plannedRR?`1:${trade.plannedRR.toFixed(2)}`:null}/>
+        <Row label={<Term word="R:R">{t.plannedRR}</Term>} value={trade.plannedRR?`1:${trade.plannedRR.toFixed(2)}`:null}/>
         <Row label={t.riskPctL} value={trade.riskPercent?`${trade.riskPercent}%`:null}/>
-        <Row label={t.posSizeL} value={trade.positionSize?`${trade.positionSize} lot`:null}/>
+        <Row label={<Term word="Lot">{t.posSizeL}</Term>} value={trade.positionSize?`${trade.positionSize} lot`:null}/>
         {trade.cancelConditions&&<div style={{marginTop:8,padding:"8px 12px",background:C.bg3,borderRadius:8}}><div style={{fontSize:11,color:C.text3,marginBottom:3}}>{t.cancelCond}</div><div style={{fontSize:13,color:C.text}}>{trade.cancelConditions}</div></div>}
       </Card>}
 
@@ -853,7 +1206,12 @@ function TradeDetail({tradeId,onBack,onEdit,isDesktop}){
       {trade.status==="open"&&!closing&&<button onClick={()=>setClosing(true)} style={{padding:"14px",borderRadius:14,background:C.tint,color:"#fff",fontWeight:700,fontSize:15}}>{t.closeTrade}</button>}
       {trade.status==="open"&&closing&&<Card>
         <div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:12}}>{t.tradeRes}</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}><Input label={t.resR} value={rR} onChange={setRR} type="number" placeholder="2.5 / -1"/><Input label={t.resUSD} value={rU} onChange={setRU} type="number" placeholder="250"/><Input label={t.maeL} value={mae} onChange={setMae} type="number" placeholder="-0.5"/><Input label={t.mfeL} value={mfe} onChange={setMfe} type="number" placeholder="3.2"/></div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+          <Input label={<Term word="R">{t.resR}</Term>} value={rR} onChange={setRR} type="number" placeholder="2.5 / -1"/>
+          <Input label={t.resUSD} value={rU} onChange={setRU} type="number" placeholder="250"/>
+          <Input label={<Term word="MAE">{t.maeL}</Term>} value={mae} onChange={setMae} type="number" placeholder="-0.5"/>
+          <Input label={<Term word="MFE">{t.mfeL}</Term>} value={mfe} onChange={setMfe} type="number" placeholder="3.2"/>
+        </div>
         <Label>{t.tradeClass}</Label><div style={{display:"flex",gap:8,marginBottom:10}}>{["A+","A","B","C","D"].map(c=><button key={c} onClick={()=>setTClass(c)} style={{flex:1,padding:"10px 0",borderRadius:10,fontWeight:700,fontSize:14,background:tClass===c?(CLS_COLOR[c]||C.tint):C.bg3,color:tClass===c?"#fff":C.text2}}>{c}</button>)}</div>
         <Label>{t.errType}</Label><Seg options={[{label:t.errNone,value:"none"},{label:t.errAn,value:"analysis"},{label:t.errEx,value:"execution"}]} value={eT} onChange={setET}/>
         <Label style={{marginTop:10}}>{t.wouldRep}</Label><Seg options={[{label:t.yes,value:"yes"},{label:t.no,value:"no"}]} value={wR?"yes":"no"} onChange={v=>setWR(v==="yes")}/>
@@ -867,10 +1225,69 @@ function TradeDetail({tradeId,onBack,onEdit,isDesktop}){
   </div>);
 }
 
+// ── Supabase Config Form ──────────────────────────────────────────────────────
+function SBConfigForm({onSaved}){
+  const {t}=useLang();const {saveSBConfig}=useAuth();
+  const [url,setUrl]=useState(localStorage.getItem(SB_URL_KEY)||"");
+  const [key,setKey]=useState(localStorage.getItem(SB_KEY_KEY)||"");
+  const [err,setErr]=useState("");const [loading,setLoading]=useState(false);
+  async function handleSave(){
+    if(!url.trim()||!key.trim()){setErr("Введите URL и Key");return;}
+    setLoading(true);setErr("");
+    try{
+      // Test connection
+      const res=await fetch(`${url.trim()}/rest/v1/`,{headers:{"apikey":key.trim(),"Authorization":`Bearer ${key.trim()}`}});
+      if(!res.ok)throw new Error("Connection failed");
+      saveSBConfig(url,key);
+      onSaved&&onSaved();
+    }catch(e){setErr(t.supabaseError);}
+    finally{setLoading(false);}
+  }
+  return(<div>
+    <Input label={t.supabaseUrl} value={url} onChange={setUrl} placeholder="https://xxxx.supabase.co" style={{marginBottom:8}}/>
+    <Input label={t.supabaseKey} value={key} onChange={setKey} placeholder="eyJhbGci..." style={{marginBottom:12}}/>
+    {err&&<div style={{fontSize:11,color:C.loss,marginBottom:8}}>{err}</div>}
+    <button onClick={handleSave} disabled={loading} style={{width:"100%",padding:"12px",borderRadius:10,fontWeight:700,fontSize:13,background:C.tint,color:"#fff",border:"none",opacity:loading?0.6:1}}>
+      {loading?t.authLoading:t.supabaseSave}
+    </button>
+  </div>);
+}
+
+// ── Supabase Auth Form ────────────────────────────────────────────────────────
+function SBAuthForm(){
+  const {t}=useLang();const {login,register}=useAuth();
+  const [mode,setMode]=useState("login");
+  const [email,setEmail]=useState("");const [password,setPassword]=useState("");
+  const [err,setErr]=useState("");const [loading,setLoading]=useState(false);
+  async function handle(){
+    if(!email||!password){setErr(t.authError);return;}
+    setLoading(true);setErr("");
+    try{
+      if(mode==="login")await login(email,password);
+      else await register(email,password);
+    }catch(e){setErr(e.message||t.authError);}
+    finally{setLoading(false);}
+  }
+  return(<div>
+    <Input label={t.authEmail} value={email} onChange={setEmail} type="email" placeholder="you@example.com" style={{marginBottom:8}}/>
+    <Input label={t.authPassword} value={password} onChange={setPassword} type="password" placeholder="••••••" style={{marginBottom:4}}/>
+    {mode==="register"&&<div style={{fontSize:11,color:C.text3,marginBottom:8}}>{t.authPasswordHint}</div>}
+    {err&&<div style={{fontSize:11,color:C.loss,marginBottom:8}}>{err}</div>}
+    <button onClick={handle} disabled={loading} style={{width:"100%",padding:"12px",borderRadius:10,fontWeight:700,fontSize:13,background:C.tint,color:"#fff",border:"none",marginBottom:8,opacity:loading?0.6:1}}>
+      {loading?t.authLoading:mode==="login"?t.authLogin:t.authRegister}
+    </button>
+    <button onClick={()=>{setMode(m=>m==="login"?"register":"login");setErr("");}} style={{width:"100%",padding:"8px",borderRadius:10,fontSize:12,color:C.text3,background:"none"}}>
+      {mode==="login"?t.authToggleRegister:t.authToggleLogin}
+    </button>
+  </div>);
+}
+
 // ── Settings (Accordion) ──────────────────────────────────────────────────────
 function Settings({isDesktop}){
-  const {trades,stats}=useTrades();const {lang,setLang,t}=useLang();
+  const {trades,stats,syncToCloud,syncing,clearAll}=useTrades();
+  const {lang,setLang,t}=useLang();
   const {scale,setScale}=useScale();const {layout,setLayout}=useLayout();
+  const {user,sbReady,sbConfigured,logout,removeSBConfig,saveSBConfig,setSbReady,setSbConfigured}=useAuth();
   const [fmt,setFmt]=useState("json");const [importText,setImportText]=useState("");const [iMode,setIMode]=useState("merge");
   const [toast,setToast]=useState(null);const fileRef=useRef();
   const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -974,17 +1391,59 @@ function Settings({isDesktop}){
       </SettingsRow>
     </div>
 
-    {/* ── DATA ── */}
+    // ── DATA ── */
     <GroupHeader title={t.sectionData}/>
     <div style={{background:C.bg2,border:`1px solid ${C.border}`,borderRadius:16,margin:"0 16px",overflow:"hidden"}}>
 
+      {/* Supabase */}
+      <SettingsRow icon="☁️" title={t.supabaseSection} sub={user?(t.supabaseConnected+" · "+user.email):t.supabaseOffline}>
+        <div style={{paddingTop:4}}>
+          {/* Status banner */}
+          {user?(
+            <div style={{padding:"10px 14px",borderRadius:10,background:C.tintDim,border:`1px solid ${C.tint}30`,marginBottom:12}}>
+              <div style={{fontSize:12,fontWeight:700,color:C.tint,marginBottom:2}}>✓ {t.supabaseConnected}</div>
+              <div style={{fontSize:11,color:C.text2}}>{user.email}</div>
+            </div>
+          ):(
+            <div style={{padding:"10px 14px",borderRadius:10,background:C.bg3,border:`1px solid ${C.border}`,marginBottom:12}}>
+              <div style={{fontSize:12,color:C.text3,lineHeight:1.5}}>{t.supabaseInfo}</div>
+            </div>
+          )}
+
+          {/* Config form — only show if no config yet */}
+          {!sbConfigured&&<SBConfigForm onSaved={()=>{setSbConfigured(true);}}/>}
+
+          {/* Login form — config set but not logged in */}
+          {sbConfigured&&!user&&<SBAuthForm/>}
+
+          {/* Logged in actions */}
+          {user&&<>
+            <button onClick={async()=>{
+              const n=await syncToCloud().catch(()=>null);
+              if(n!=null)showToast(t.supabaseSynced(n));
+              else showToast(t.supabaseError,false);
+            }} style={{width:"100%",padding:"12px",borderRadius:10,fontWeight:700,fontSize:13,background:C.tint,color:"#fff",border:"none",marginBottom:8}}>
+              {syncing?t.supabaseSyncing:t.supabaseSync}
+            </button>
+            <button onClick={async()=>{await logout();showToast("Выход выполнен");}} style={{width:"100%",padding:"10px",borderRadius:10,fontWeight:600,fontSize:13,background:C.bg3,color:C.text2,border:`1px solid ${C.border}`}}>
+              {t.authLogout}
+            </button>
+          </>}
+
+          {/* Disconnect config */}
+          {sbConfigured&&<button onClick={()=>{if(confirm("Отключить Supabase? Локальные данные останутся.")){removeSBConfig();}}} style={{width:"100%",marginTop:8,padding:"10px",borderRadius:10,fontWeight:600,fontSize:12,background:"none",color:C.text3,border:`1px dashed ${C.border}`}}>
+            {t.supabaseDisconnect}
+          </button>}
+        </div>
+      </SettingsRow>
+
       {/* DB info */}
       <SettingsRow icon="🗄" title={t.dbInfo} sub={t.dbInfoSub}>
-        <div style={{paddingTop:4,padding:"8px 12px",background:C.bg3,borderRadius:10}}>
+        <div style={{padding:"8px 12px",background:C.bg3,borderRadius:10,marginTop:4}}>
           <div style={{fontSize:12,color:C.text2,lineHeight:1.6}}>{t.dbInfoSub}</div>
           <div style={{marginTop:8,display:"flex",gap:16}}>
             <div><div style={{fontSize:10,color:C.text3}}>Trades</div><div style={{fontSize:18,fontWeight:700,color:C.tint,fontFamily:"'JetBrains Mono',monospace"}}>{trades.length}</div></div>
-            <div><div style={{fontSize:10,color:C.text3}}>Storage</div><div style={{fontSize:14,fontWeight:700,color:C.text,fontFamily:"'JetBrains Mono',monospace"}}>IndexedDB</div></div>
+            <div><div style={{fontSize:10,color:C.text3}}>Storage</div><div style={{fontSize:14,fontWeight:700,color:C.text,fontFamily:"'JetBrains Mono',monospace"}}>{user?"Supabase + IDB":"IndexedDB"}</div></div>
           </div>
         </div>
       </SettingsRow>
@@ -1040,11 +1499,18 @@ function Settings({isDesktop}){
       <SettingsRow icon="🗑" title={t.rowClear} sub={t.rowClearSub} danger>
         <div style={{paddingTop:4}}>
           <div style={{fontSize:13,color:C.text2,marginBottom:12,lineHeight:1.5}}>{t.clearDesc}</div>
-          <button onClick={async()=>{if(confirm(t.clearConfirm(trades.length))){await dbClear();window.location.reload();}}} style={{width:"100%",padding:"12px",borderRadius:10,fontWeight:700,fontSize:14,background:C.lossDim,color:C.loss,border:`1px solid ${C.loss}40`}}>{t.clearAll}</button>
+          <button onClick={async()=>{if(confirm(t.clearConfirm(trades.length))){await clearAll();window.location.reload();}}} style={{width:"100%",padding:"12px",borderRadius:10,fontWeight:700,fontSize:14,background:C.lossDim,color:C.loss,border:`1px solid ${C.loss}40`}}>{t.clearAll}</button>
         </div>
       </SettingsRow>
     </div>
   </div>);
+}
+
+// ── Cloud Status Badge ────────────────────────────────────────────────────────
+function CloudBadge(){
+  const {user}=useAuth();
+  if(!user)return <div style={{marginTop:6,fontSize:10,color:C.text3,fontFamily:"'JetBrains Mono',monospace"}}>📱 Local</div>;
+  return <div style={{marginTop:6,fontSize:10,color:C.tint,fontFamily:"'JetBrains Mono',monospace"}}>☁️ Cloud</div>;
 }
 
 // ── Desktop Sidebar ───────────────────────────────────────────────────────────
@@ -1082,6 +1548,7 @@ function SideNav({active,onNav}){
         </a>
         <div style={{fontSize:10,color:C.text3,fontFamily:"'JetBrains Mono',monospace"}}>v3.0</div>
         <div style={{fontSize:10,color:C.text3,fontFamily:"'JetBrains Mono',monospace"}}>2026 All Rights Reserved</div>
+        <CloudBadge/>
       </div>
     </div>
   );
@@ -1158,9 +1625,9 @@ function AppInner(){
 }
 
 function App(){
-  return(<ScaleProvider><LayoutProvider><LangProvider><TradesProvider>
+  return(<ScaleProvider><LayoutProvider><AuthProvider><LangProvider><TradesProvider>
     <AppInner/>
-  </TradesProvider></LangProvider></LayoutProvider></ScaleProvider>);
+  </TradesProvider></LangProvider></AuthProvider></LayoutProvider></ScaleProvider>);
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
