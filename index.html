@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Trader Journal</title>
-  <!-- Supabase JS Client v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root { --bg:#0A0A0A; --card:#1A1A1A; --border:#2A2A2A; --text:#F9FAFB; --accent:#3ECF8E; --danger:#EF4444; }
@@ -16,7 +15,6 @@
     input, textarea { width:100%; padding:12px; margin:8px 0; border:1px solid var(--border); border-radius:8px; background:var(--card); color:var(--text); font-size:16px; }
     button { width:100%; padding:14px; margin:10px 0; border:none; border-radius:8px; background:var(--accent); color:#0A0A0A; font-size:16px; font-weight:600; cursor:pointer; }
     button.secondary { background:var(--card); color:var(--text); border:1px solid var(--border); }
-    button.danger { background:var(--danger); color:white; }
     .card { background:var(--card); padding:20px; border-radius:12px; margin:15px 0; border:1px solid var(--border); }
     .trade-item { background:var(--card); padding:15px; border-radius:8px; margin:10px 0; border-left:4px solid var(--accent); }
     .trade-item.negative { border-left-color:var(--danger); }
@@ -28,34 +26,22 @@
 </head>
 <body>
   <div class="container">
-    <!-- 1. Подключение к базе -->
-    <div id="setup-screen">
-      <h1>🔗 Подключение к базе</h1>
-      <div class="card">
-        <input type="text" id="setup-url" placeholder="Project URL (https://...supabase.co)" />
-        <input type="text" id="setup-key" placeholder="anon public key (sb_... или eyJ...)" />
-        <button onclick="connectDB()">Проверить и продолжить</button>
-        <div id="setup-msg" class="msg"></div>
-      </div>
-    </div>
-
-    <!-- 2. Авторизация -->
-    <div id="auth-screen" class="hidden">
-      <h1>🔐 Вход в журнал</h1>
+    <!-- ЭКРАН АВТОРИЗАЦИИ (показывается первым) -->
+    <div id="auth-screen">
+      <h1>🔐 Trader Journal</h1>
       <div class="card">
         <input type="email" id="auth-email" placeholder="Email" />
         <input type="password" id="auth-pass" placeholder="Пароль" />
         <button onclick="login()">Войти</button>
         <button class="secondary" onclick="signup()">Зарегистрироваться</button>
         <div id="auth-msg" class="msg"></div>
-        <button class="secondary" style="margin-top:20px;" onclick="resetConnection()">🔙 Сменить базу</button>
       </div>
     </div>
 
-    <!-- 3. Приложение -->
+    <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ (скрыто до входа) -->
     <div id="app-screen" class="hidden">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h1>📊 Trader Journal</h1>
+        <h1>📊 Журнал сделок</h1>
         <button class="secondary" style="width:auto; padding:8px 12px;" onclick="logout()">Выйти</button>
       </div>
 
@@ -71,86 +57,53 @@
       </div>
 
       <div class="card">
-        <h2> История сделок</h2>
-        <button class="secondary" onclick="loadTrades()"> Обновить</button>
+        <h2>📋 История</h2>
+        <button class="secondary" onclick="loadTrades()">🔄 Обновить</button>
         <div id="trades-list" style="margin-top:15px;"></div>
       </div>
     </div>
   </div>
 
   <script>
-    let supabase = null;
+    // ============================================================
+    //  ВСТАВЬТЕ СЮДА ВАШИ ДАННЫЕ ИЗ SUPABASE (Settings → API)
+    // ============================================================
+    const SUPABASE_URL = 'https://ВАШ_ID.supabase.co';       // Project URL
+    const SUPABASE_KEY = 'sb_ВАШ_ANON_КЛЮЧ';                 // anon / public key
+    // ============================================================
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let session = null;
 
-    // При загрузке проверяем сохранённые настройки
-    window.addEventListener('load', () => {
-      const url = localStorage.getItem('sb_url');
-      const key = localStorage.getItem('sb_key');
-      if (url && key) {
-        initClient(url, key);
-        checkSession();
+    // При загрузке проверяем, есть ли активная сессия
+    window.addEventListener('load', async () => {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      if (currentSession) {
+        session = currentSession;
+        showApp();
       } else {
-        showScreen('setup-screen');
+        showAuth();
       }
     });
 
     function showScreen(id) {
-      ['setup-screen','auth-screen','app-screen'].forEach(s => document.getElementById(s).classList.add('hidden'));
+      ['auth-screen', 'app-screen'].forEach(s => document.getElementById(s).classList.add('hidden'));
       document.getElementById(id).classList.remove('hidden');
     }
-
-    function initClient(url, key) {
-      supabase = window.supabase.createClient(url.trim(), key.trim());
-    }
-
-    async function connectDB() {
-      const url = document.getElementById('setup-url').value.trim();
-      const key = document.getElementById('setup-key').value.trim();
-      const msg = document.getElementById('setup-msg');
-      if (!url || !key) return showMsg(msg, 'Заполните оба поля', 'error');
-      if (!url.includes('.supabase.co')) return showMsg(msg, 'Неверный формат URL', 'error');
-
-      showMsg(msg, 'Проверка подключения...', 'success');
-      try {
-        initClient(url, key);
-        const { error } = await supabase.auth.getSession();
-        if (error && error.message.includes('Invalid')) throw error;
-        localStorage.setItem('sb_url', url);
-        localStorage.setItem('sb_key', key);
-        showMsg(msg, '✅ База подключена', 'success');
-        setTimeout(() => showScreen('auth-screen'), 600);
-      } catch (e) {
-        showMsg(msg, '❌ ' + e.message, 'error');
-      }
-    }
-
-    function resetConnection() {
-      localStorage.removeItem('sb_url');
-      localStorage.removeItem('sb_key');
-      supabase = null; session = null;
-      showScreen('setup-screen');
-    }
-
-    async function checkSession() {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        session = data.session;
-        showScreen('app-screen');
-        loadTrades();
-      } else {
-        showScreen('auth-screen');
-      }
-    }
+    function showAuth() { showScreen('auth-screen'); }
+    function showApp() { showScreen('app-screen'); loadTrades(); }
 
     async function signup() {
       const email = document.getElementById('auth-email').value.trim();
       const pass = document.getElementById('auth-pass').value;
       const msg = document.getElementById('auth-msg');
       if (!email || !pass) return showMsg(msg, 'Введите email и пароль', 'error');
-      showMsg(msg, 'Регистрация...', 'success');
+      
+      showMsg(msg, 'Создание аккаунта...', 'success');
       const { error } = await supabase.auth.signUp({ email, password: pass });
       if (error) return showMsg(msg, error.message, 'error');
-      showMsg(msg, '✅ Аккаунт создан. Войдите.', 'success');
+      
+      showMsg(msg, '✅ Аккаунт создан. Теперь войдите.', 'success');
     }
 
     async function login() {
@@ -158,18 +111,19 @@
       const pass = document.getElementById('auth-pass').value;
       const msg = document.getElementById('auth-msg');
       if (!email || !pass) return showMsg(msg, 'Введите email и пароль', 'error');
+
       showMsg(msg, 'Вход...', 'success');
       const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
       if (error) return showMsg(msg, error.message, 'error');
+
       session = data.session;
-      showScreen('app-screen');
-      loadTrades();
+      showApp();
     }
 
     async function logout() {
       await supabase.auth.signOut();
       session = null;
-      showScreen('auth-screen');
+      showAuth();
     }
 
     async function addTrade() {
@@ -198,9 +152,17 @@
       if (!session) return;
       const list = document.getElementById('trades-list');
       list.innerHTML = '<p class="msg">Загрузка...</p>';
-      const { data, error } = await supabase.from('trades').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false });
+      
+      // RLS автоматически отфильтрует только ваши сделки
+      const { data, error } = await supabase
+        .from('trades')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false });
+
       if (error) return list.innerHTML = `<p class="msg error">${error.message}</p>`;
       if (!data.length) return list.innerHTML = '<p class="msg">Нет сделок</p>';
+
       list.innerHTML = data.map(t => `
         <div class="trade-item ${t.pnl < 0 ? 'negative' : ''}">
           <div style="display:flex; justify-content:space-between; font-weight:600;">
