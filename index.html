@@ -430,15 +430,17 @@ function getSBConfig(){
 }
 function hasSBConfig(){const c=getSBConfig();return !!(c.url&&c.key);}
 
-// Low-level fetch wrapper for Supabase REST API
+// Low-level fetch wrapper — supports both JWT (eyJ...) and new sb_publishable_... keys
 async function sbFetch(path,options={}){
   const {url,key}=getSBConfig();
   if(!url||!key)throw new Error("No Supabase config");
   const session=JSON.parse(localStorage.getItem(SB_SESSION_KEY)||"null");
+  // New key format uses Authorization: Bearer <access_token>, apikey stays the same
+  const authToken=session?.access_token||key;
   const headers={
     "Content-Type":"application/json",
     "apikey":key,
-    "Authorization":`Bearer ${session?.access_token||key}`,
+    "Authorization":`Bearer ${authToken}`,
     ...options.headers,
   };
   const res=await fetch(`${url}${path}`,{...options,headers});
@@ -447,33 +449,33 @@ async function sbFetch(path,options={}){
   return text?JSON.parse(text):null;
 }
 
-// Auth
+// Auth — works with both old anon key (eyJ...) and new sb_publishable_... format
 async function sbSignUp(email,password){
   const {url,key}=getSBConfig();
   const res=await fetch(`${url}/auth/v1/signup`,{
-    method:"POST",headers:{"Content-Type":"application/json","apikey":key},
+    method:"POST",
+    headers:{"Content-Type":"application/json","apikey":key,"Authorization":`Bearer ${key}`},
     body:JSON.stringify({email,password}),
   });
   const data=await res.json();
-  if(data.error)throw new Error(data.error.message||data.error);
+  if(data.error||data.code>=400)throw new Error(data.message||data.error?.message||"Signup failed");
   if(data.session)localStorage.setItem(SB_SESSION_KEY,JSON.stringify(data.session));
   return data;
 }
 async function sbSignIn(email,password){
   const {url,key}=getSBConfig();
   const res=await fetch(`${url}/auth/v1/token?grant_type=password`,{
-    method:"POST",headers:{"Content-Type":"application/json","apikey":key},
+    method:"POST",
+    headers:{"Content-Type":"application/json","apikey":key,"Authorization":`Bearer ${key}`},
     body:JSON.stringify({email,password}),
   });
   const data=await res.json();
-  if(data.error_description||data.error)throw new Error(data.error_description||data.error);
+  if(data.error||data.error_description)throw new Error(data.error_description||data.message||"Auth failed");
   localStorage.setItem(SB_SESSION_KEY,JSON.stringify(data));
   return data;
 }
 async function sbSignOut(){
-  try{
-    await sbFetch("/auth/v1/logout",{method:"POST"});
-  }catch(e){}
+  try{await sbFetch("/auth/v1/logout",{method:"POST"});}catch(e){}
   localStorage.removeItem(SB_SESSION_KEY);
 }
 async function sbRefreshSession(){
@@ -482,7 +484,8 @@ async function sbRefreshSession(){
     if(!session?.refresh_token)return null;
     const {url,key}=getSBConfig();
     const res=await fetch(`${url}/auth/v1/token?grant_type=refresh_token`,{
-      method:"POST",headers:{"Content-Type":"application/json","apikey":key},
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":key,"Authorization":`Bearer ${key}`},
       body:JSON.stringify({refresh_token:session.refresh_token}),
     });
     const data=await res.json();
@@ -1231,22 +1234,69 @@ function SBConfigForm({onSaved}){
   const [url,setUrl]=useState(localStorage.getItem(SB_URL_KEY)||"");
   const [key,setKey]=useState(localStorage.getItem(SB_KEY_KEY)||"");
   const [err,setErr]=useState("");const [loading,setLoading]=useState(false);
+  const [showInstr,setShowInstr]=useState(false);
+
   async function handleSave(){
-    if(!url.trim()||!key.trim()){setErr("Введите URL и Key");return;}
+    if(!url.trim()||!key.trim()){setErr("Введите Project URL и Publishable Key");return;}
+    if(!url.includes("supabase.co")){setErr("URL должен содержать supabase.co");return;}
     setLoading(true);setErr("");
     try{
-      // Test connection
-      const res=await fetch(`${url.trim()}/rest/v1/`,{headers:{"apikey":key.trim(),"Authorization":`Bearer ${key.trim()}`}});
-      if(!res.ok)throw new Error("Connection failed");
+      // Test connection with new key format
+      const testRes=await fetch(`${url.trim()}/auth/v1/health`,{
+        headers:{"apikey":key.trim(),"Authorization":`Bearer ${key.trim()}`}
+      });
+      if(!testRes.ok)throw new Error("Connection failed");
       saveSBConfig(url,key);
       onSaved&&onSaved();
-    }catch(e){setErr(t.supabaseError);}
+    }catch(e){
+      // If health check not available, just save and try
+      if(e.message.includes("health")||e.message.includes("404")){
+        saveSBConfig(url,key);
+        onSaved&&onSaved();
+      } else {
+        setErr(t.supabaseError);
+      }
+    }
     finally{setLoading(false);}
   }
+
+  const Step=({n,text,code})=>(
+    <div style={{display:"flex",gap:10,marginBottom:12,alignItems:"flex-start"}}>
+      <div style={{width:22,height:22,borderRadius:11,background:C.tintDim,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:C.tint}}>{n}</div>
+      <div style={{flex:1}}>
+        <div style={{fontSize:12,color:C.text2,lineHeight:1.6,marginBottom:code?6:0}}>{text}</div>
+        {code&&<div style={{background:"#0D0D0D",borderRadius:8,padding:"8px 10px",fontSize:11,fontFamily:"'JetBrains Mono',monospace",color:"#A3E635",whiteSpace:"pre-wrap",wordBreak:"break-all"}}>{code}</div>}
+      </div>
+    </div>
+  );
+
   return(<div>
-    <Input label={t.supabaseUrl} value={url} onChange={setUrl} placeholder="https://xxxx.supabase.co" style={{marginBottom:8}}/>
-    <Input label={t.supabaseKey} value={key} onChange={setKey} placeholder="eyJhbGci..." style={{marginBottom:12}}/>
-    {err&&<div style={{fontSize:11,color:C.loss,marginBottom:8}}>{err}</div>}
+    {/* Instruction toggle */}
+    <button onClick={()=>setShowInstr(p=>!p)} style={{
+      width:"100%",padding:"10px 14px",borderRadius:10,marginBottom:12,
+      background:"#818CF815",border:"1px solid #818CF830",
+      display:"flex",alignItems:"center",justifyContent:"space-between",
+    }}>
+      <span style={{fontSize:13,fontWeight:600,color:"#818CF8"}}>📖 Инструкция по настройке Supabase</span>
+      <span style={{color:"#818CF8",fontSize:16,transform:showInstr?"rotate(90deg)":"none",transition:"transform .2s"}}>›</span>
+    </button>
+
+    {showInstr&&<div style={{background:C.bg3,borderRadius:12,padding:"14px",marginBottom:12,border:`1px solid ${C.border}`}}>
+      <Step n="1" text="Зайди на supabase.com → войди или зарегистрируйся (бесплатно)"/>
+      <Step n="2" text='Нажми "New Project" → придумай название и пароль БД → выбери регион EU (Frankfurt) → Create Project'/>
+      <Step n="3" text='В боковом меню → "Connect" (вверху) → скопируй Project URL'/>
+      <Step n="4" text='В боковом меню → Settings → API → скопируй "Publishable key" (начинается с sb_publishable_...)'/>
+      <Step n="5" text="Открой SQL Editor (иконка базы данных в меню) → вставь и выполни этот SQL:" code={`create table trades (\n  id text primary key,\n  user_id uuid references auth.users not null,\n  data jsonb not null,\n  updated_at timestamptz default now()\n);\nalter table trades enable row level security;\ncreate policy "own" on trades for all\n  using (auth.uid() = user_id)\n  with check (auth.uid() = user_id);`}/>
+      <Step n="6" text="Вернись сюда → введи Project URL и Publishable Key → нажми Подключить → зарегистрируйся"/>
+      <div style={{padding:"8px 12px",background:C.tintDim,borderRadius:8,border:`1px solid ${C.tint}30`}}>
+        <div style={{fontSize:11,color:C.tint,fontWeight:600,marginBottom:3}}>✓ Безопасность</div>
+        <div style={{fontSize:11,color:C.text2,lineHeight:1.5}}>Publishable key безопасен в открытом коде. RLS-политика гарантирует что без логина никто не увидит твои данные.</div>
+      </div>
+    </div>}
+
+    <Input label="Project URL" value={url} onChange={setUrl} placeholder="https://xxxx.supabase.co" style={{marginBottom:8}}/>
+    <Input label="Publishable Key (sb_publishable_...)" value={key} onChange={setKey} placeholder="sb_publishable_..." style={{marginBottom:12}}/>
+    {err&&<div style={{fontSize:11,color:C.loss,marginBottom:8,padding:"6px 10px",background:C.lossDim,borderRadius:8}}>{err}</div>}
     <button onClick={handleSave} disabled={loading} style={{width:"100%",padding:"12px",borderRadius:10,fontWeight:700,fontSize:13,background:C.tint,color:"#fff",border:"none",opacity:loading?0.6:1}}>
       {loading?t.authLoading:t.supabaseSave}
     </button>
@@ -1391,7 +1441,6 @@ function Settings({isDesktop}){
       </SettingsRow>
     </div>
 
-    // ── DATA ── */
     <GroupHeader title={t.sectionData}/>
     <div style={{background:C.bg2,border:`1px solid ${C.border}`,borderRadius:16,margin:"0 16px",overflow:"hidden"}}>
 
